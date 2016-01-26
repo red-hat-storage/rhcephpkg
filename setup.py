@@ -16,6 +16,7 @@ setup(
     packages         = ['rhcephpkg'],
     author           = 'Ken Dreyer',
     author_email     = 'kdreyer [at] redhat.com',
+    url              = 'https://github.com/red-hat-storage/rhcephpkg',
     version          = metadata['version'],
     license          = 'MIT',
     zip_safe         = False,
