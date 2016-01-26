@@ -51,6 +51,8 @@ Commands
 * ``rhcephpkg hello`` - Test Jenkins authentication. Use this to verify your
   ``user`` and ``token`` settings.
 
+* ``rhcephpkg localbuild`` - Perform a local build using pbuilder.
+
 
 SSL errors
 ----------
@@ -69,5 +71,6 @@ TODO
 ----
 * Replace the hacky argparsing with `tambo
   <https://pypi.python.org/pypi/tambo>`_
-* Add more commands, like ``rhcephpkg build`` (do a local build with pbuilder), or ``rhcephpkg patch`` (equivalent of "rdopkg patch", and runs "gbp-pq export" under the hood)
+* Add more commands, like ``rhcephpkg patch`` (equivalent of "rdopkg patch",
+  and runs "gbp-pq export" under the hood)
 

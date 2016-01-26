@@ -29,13 +29,15 @@ class RHCephPkg(object):
         # Poor mans arg parsing
         if len(sys.argv) < 2:
             print('%s:' % os.path.basename(sys.argv[0]))
-            print('valid args are: build, clone, hello')
+            print('valid args are: build, clone, hello, localbuild')
         elif sys.argv[1] == 'build':
             self.build()
         elif sys.argv[1] == 'clone':
             self.clone()
         elif sys.argv[1] == 'hello':
             self.hello_jenkins()
+        elif sys.argv[1] == 'localbuild':
+            self.localbuild()
 
     def _load_config_from_file(self):
         """ Parse a Jenkins configuration file and return a
@@ -103,4 +105,20 @@ class RHCephPkg(object):
             exit(1)
         pkg_url = self.config['gitbaseurl'] % {'user': self.config['user'], 'module': pkg}
         cmd = ['git', 'clone', pkg_url]
+        subprocess.check_call(cmd)
+
+    def localbuild(self):
+        """ Build a package on the local system, using pbuilder. """
+        pkg_name = os.path.basename(os.getcwd())
+        # Get our current branch's name
+        os.environ['BUILDER'] = 'pbuilder'
+        j_arg = '-j%d' % self._get_num_cpus()
+        # FIXME: stop hardcoding trusty. Use the git branch name instead,
+        # translating "-ubuntu" into this local computer's own distro.
+        cmd = ['git-buildpackage', '--git-dist=trusty', '--git-arch=amd64',
+               '--git-verbose', '--git-pbuilder', j_arg, '-us', '-uc']
+        # TODO: we should also probably check parent dir for leftovers and warn
+        # the user to delete them (or delete them ourselves?)
+
+        log.info('building %s with pbuilder', pkg_name)
         subprocess.check_call(cmd)
