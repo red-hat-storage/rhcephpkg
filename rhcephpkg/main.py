@@ -29,7 +29,7 @@ class RHCephPkg(object):
         # Poor mans arg parsing
         if len(sys.argv) < 2:
             print('%s:' % os.path.basename(sys.argv[0]))
-            print('valid args are: build, clone')
+            print('valid args are: build, clone, hello')
         elif sys.argv[1] == 'build':
             self.build()
         elif sys.argv[1] == 'clone':
