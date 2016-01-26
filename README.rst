@@ -34,18 +34,18 @@ Substitute your settings:
 Commands
 --------
 
-``rhcephpkg clone`` - clone a "dist-git" repository. You must have a valid
-Kerberos ticket.
+* ``rhcephpkg clone`` - clone a "dist-git" repository. You must have a valid
+  Kerberos ticket.
 
-We use Git repositories with layouts that interoperate with Debian's
-`git-buildpackage
-<http://honk.sigxcpu.org/projects/git-buildpackage/manual-html/gbp.html>`_
-suite of tools.
+  We use Git repositories with layouts that interoperate with Debian's
+  `git-buildpackage
+  <http://honk.sigxcpu.org/projects/git-buildpackage/manual-html/gbp.html>`_
+  suite of tools.
 
-``rhcephpkg build`` - Trigger a build in Jenkins.
+* ``rhcephpkg build`` - Trigger a build in Jenkins.
 
-``rhcephpkg hello`` - Test Jenkins authentication. Use this to verify your
-``user`` and ``token`` settings.
+* ``rhcephpkg hello`` - Test Jenkins authentication. Use this to verify your
+  ``user`` and ``token`` settings.
 
 
 SSL errors
