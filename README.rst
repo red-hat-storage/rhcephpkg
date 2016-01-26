@@ -1,0 +1,65 @@
+``rhcephpkg``
+=============
+A tool to package and build Red Hat Ceph Storage for Ubuntu.
+
+``rhcephpkg`` is a command-line tool similar to Red Hat's "rpkg" family of
+tools, like `fedpkg
+<https://fedoraproject.org/wiki/Package_maintenance_guide>`_ (open-source) or
+rhpkg (closed-source). In Red Hat we use this to package and build the RH Ceph
+Enterprise product for Ubuntu.
+
+Configuration
+-------------
+
+``$HOME/.rhcephpkg.conf`` should contain the following::
+
+  [rhcephpkg]
+  user=kdreyer
+  gitbaseurl = ssh://%(user)s@git.engineering.redhat.com/srv/git/users/kdreyer/ubuntu/%(module)s
+  anongiturl = git://git.engineering.redhat.com/users/kdreyer/ubuntu/%(module)s
+
+  [rhcephpkg.jenkins]
+  token=5d41402abc4b2a76b9719d911017c592
+  url=https://ceph-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/
+
+Substitute your settings:
+
+* ``user`` is your Red Hat Kerberos UID
+* ``token`` is your API token from Jenkins. To find this value, log into Jenkins' Web UI (using your Kerberos username + password)
+
+Commands
+--------
+
+``rhcephpkg clone`` - clone a "dist-git" repository. You must have a valid
+Kerberos ticket.
+
+We use Git repositories with layouts that interoperate with Debian's
+`git-buildpackage
+<http://honk.sigxcpu.org/projects/git-buildpackage/manual-html/gbp.html>`_
+suite of tools.
+
+``rhcephpkg build`` - Trigger a build in Jenkins.
+
+``rhcephpkg hello`` - Test Jenkins authentication. Use this to verify your
+``user`` and ``token`` settings.
+
+
+SSL errors
+----------
+
+This is more of a python-requests thing, but if you receive an SSL warning,
+it's probably because you don't have the Red Hat IT CA set up for your Python
+environment. Particularly if you're running this in a virtualenv, you'll want
+to set the following configuration variable::
+
+    REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/Eng-CA.pem
+
+Where "Eng-CA.pem" is the public cert that signed the Jenkins server's HTTPS
+certificate.
+
+TODO
+----
+* Replace the hacky argparsing with `tambo
+  <https://pypi.python.org/pypi/tambo>`_
+* Add more commands, like ``rhcephpkg build`` (do a local build with pbuilder), or ``rhcephpkg patch`` (equivalent of "rdopkg patch", and runs "gbp-pq export" under the hood)
+
