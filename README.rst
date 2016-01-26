@@ -1,5 +1,9 @@
 ``rhcephpkg``
 =============
+
+.. image:: https://badge.fury.io/py/rhcephpkg.svg
+             :target: https://badge.fury.io/py/rhcephpkg
+
 A tool to package and build Red Hat Ceph Storage for Ubuntu.
 
 ``rhcephpkg`` is a command-line tool similar to Red Hat's "rpkg" family of
