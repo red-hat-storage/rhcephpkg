@@ -2,6 +2,7 @@ import logging
 import os
 import posixpath
 import json
+import re
 import subprocess
 import sys
 from six.moves import configparser
@@ -53,6 +54,14 @@ class RHCephPkg(object):
             log.error('Problem parsing .rhcephpkg.conf: %s', err.message)
             exit(1)
         return config
+
+    def _get_num_cpus(self, cpuinfo='/proc/cpuinfo'):
+        """ Get the number of CPUs from /proc/cpuinfo.
+            (We will pass this number to pbuilder.) """
+        pattern = re.compile('^processor')
+        with open(cpuinfo) as f:
+            result = filter(lambda x: pattern.match(x), f.readlines())
+        return len(list(result))
 
     def hello_jenkins(self):
         """ Authenticate to Jenkins and print our username to STDOUT.
