@@ -2,7 +2,7 @@
 =============
 
 .. image:: https://travis-ci.org/red-hat-storage/rhcephpkg.svg?branch=master
-          :target: https://travis-ci.org/redh-hat-storage/rhcephpkg
+          :target: https://travis-ci.org/red-hat-storage/rhcephpkg
 
 .. image:: https://badge.fury.io/py/rhcephpkg.svg
              :target: https://badge.fury.io/py/rhcephpkg
