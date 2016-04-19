@@ -72,6 +72,7 @@ class RHCephPkg(object):
         # python-jenkins does not have syntactic support for "whoami" (the
         # "/me/api/json" endpoint), so we have to hit it and parse it
         # ourselves.
+        # https://review.openstack.org/307896
 
         whoami_url = posixpath.join(self.config['jenkins_url'], 'me/api/json')
         try:
