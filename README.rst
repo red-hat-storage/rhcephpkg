@@ -66,19 +66,6 @@ Pre-built Ubuntu Trusty packages are available::
   sudo apt-get install rhcephpkg
 
 
-SSL errors
-----------
-
-This is more of a python-requests thing, but if you receive an SSL warning,
-it's probably because you don't have the Red Hat IT CA set up for your Python
-environment. Particularly if you're running this in a virtualenv, you'll want
-to set the following configuration variable::
-
-    REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/Eng-CA.pem
-
-Where "Eng-CA.pem" is the public cert that signed the Jenkins server's HTTPS
-certificate.
-
 TODO
 ----
 * Replace the hacky argparsing with `tambo
