@@ -2,7 +2,11 @@ import os
 import pytest
 
 import httpretty
-from jenkins import CRUMB_URL
+try:
+    from jenkins import CRUMB_URL
+except ImportError:
+    # CRUMB_URL was introduced in python-jenkins v0.2.2
+    CRUMB_URL = 'crumbIssuer/api/json'
 
 from rhcephpkg.main import RHCephPkg
 
@@ -59,9 +63,9 @@ class TestHelloJenkins(object):
                                'https://ceph-jenkins.example.com/me/api/json',
                                body='{"fullName": "Ken"}',
                                content_type='text/json')
-        # python-jenkins checks this CRUMB_URL in its maybe_add_crumb().
-        # Return a 404 so python-jenkins catches the NotFoundException and
-        # carries on.
+        # python-jenkins v0.2.2+ checks this CRUMB_URL in its
+        # maybe_add_crumb(). Return a 404 so python-jenkins catches the
+        # NotFoundException and carries on.
         httpretty.register_uri(httpretty.GET,
                                'https://ceph-jenkins.example.com/' + CRUMB_URL,
                                status=404)
