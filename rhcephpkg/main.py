@@ -6,7 +6,7 @@ import re
 import subprocess
 import sys
 from six.moves import configparser
-from six.moves.urllib.request import Request
+from six.moves.urllib.request import Request, urlopen
 
 from jenkins import Jenkins, JenkinsException
 
@@ -82,7 +82,17 @@ class RHCephPkg(object):
             exit(1)
 
         name = data['fullName'] # Our Jenkins instance gets this from LDAP
-        print('Hello %s from Jenkins %s' % (name, self.jenkins.get_version()))
+        try:
+            jenkins_version = self.jenkins.get_version()
+        except AttributeError:
+            # python-jenkins older than 0.4.1 does not have get_version().
+            version_url = self.jenkins.server
+            try:
+                response = urlopen(Request(version_url))
+                jenkins_version = response.info().getheader('X-Jenkins')
+            except (HTTPError, BadStatusLine) as err:
+                raise SystemExit(err)
+        print('Hello %s from Jenkins %s' % (name, jenkins_version))
 
     def build(self):
         """ Build a package in Jenkins. """
