@@ -56,6 +56,15 @@ Commands
 
 * ``rhcephpkg localbuild`` - Perform a local build using pbuilder.
 
+Installing
+----------
+
+Pre-built Ubuntu Trusty packages are available::
+
+  sudo apt-add-repository ppa:kdreyer-redhat/rhceph
+  sudo apt-get update
+  sudo apt-get install rhcephpkg
+
 
 SSL errors
 ----------
