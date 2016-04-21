@@ -84,7 +84,7 @@ class RHCephPkg(object):
             print(err)
             exit(1)
 
-        name = data['fullName'] # Our Jenkins instance gets this from LDAP
+        name = data['fullName']  # Our Jenkins instance gets this from LDAP
         try:
             jenkins_version = self.jenkins.get_version()
         except AttributeError:
