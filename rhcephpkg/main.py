@@ -110,8 +110,8 @@ class RHCephPkg(object):
                  pkg_name, branch_name, self.jenkins.url)
         job_params = {'PKG_NAME': pkg_name, 'BRANCH': branch_name}
 
-        self.jenkins.build_job(
-            'build-package', parameters=job_params, token=self.jenkins.password)
+        self.jenkins.build_job('build-package', parameters=job_params,
+                               token=self.jenkins.password)
 
     def clone(self):
         """ Clone a package from dist-git. """
