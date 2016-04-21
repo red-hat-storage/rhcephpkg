@@ -13,6 +13,7 @@ from jenkins import Jenkins, JenkinsException
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('rhcephpkg')
 
+
 class RHCephPkg(object):
     """ Main class for rhcephpkg CLI. """
 
