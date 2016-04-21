@@ -15,4 +15,7 @@ python:
 install: pip install --upgrade pytest>=2.8
 script:
   - python setup.py test -a -v
-cache: pip
+cache:
+  directories:
+  - $HOME/.cache/pip
+  - $HOME/.cache/v/flake8
