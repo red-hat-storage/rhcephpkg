@@ -25,6 +25,7 @@ class RHCephPkg(object):
             password=self.config['jenkins_token'],
         )
         self.jenkins.password = self.config['jenkins_token']
+        self.jenkins.url = self.config['jenkins_url']
 
         # Poor mans arg parsing
         if len(sys.argv) < 2:
@@ -102,7 +103,8 @@ class RHCephPkg(object):
         cmd = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
         branch_name = subprocess.check_output(cmd).rstrip()
 
-        log.info('building %s branch %s', pkg_name, branch_name)
+        log.info('building %s branch %s at %s/job/build-package',
+                 pkg_name, branch_name, self.jenkins.url)
         job_params = {'PKG_NAME': pkg_name, 'BRANCH': branch_name}
 
         self.jenkins.build_job(
