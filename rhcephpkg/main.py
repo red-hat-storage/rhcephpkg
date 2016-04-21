@@ -7,6 +7,8 @@ import subprocess
 import sys
 from six.moves import configparser
 from six.moves.urllib.request import Request, urlopen
+from six.moves.urllib.error import HTTPError
+from six.moves.http_client import BadStatusLine
 
 from jenkins import Jenkins, JenkinsException
 
