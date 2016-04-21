@@ -14,5 +14,5 @@ python:
 #   to a newer version if the package is already present in a virtualenv.
 install: pip install --upgrade pytest>=2.8
 script:
-  - python setup.py test
+  - python setup.py test -a -v
 cache: pip
