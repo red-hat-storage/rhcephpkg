@@ -13,6 +13,7 @@ from rhcephpkg.main import RHCephPkg
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
 
+
 class TestConfigFile(object):
 
     def test_missing_config_file(self, monkeypatch, tmpdir):
@@ -77,6 +78,7 @@ class TestHelloJenkins(object):
         rhcpkg.hello_jenkins()
         out, _ = capsys.readouterr()
         assert out == "Hello Ken from Jenkins 1.5\n"
+
 
 class TestClone(object):
 
