@@ -97,4 +97,5 @@ class TestClone(object):
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
         rhcpkg = RHCephPkg()
         rhcpkg.clone()
-        assert self.last_cmd == ['git', 'clone', 'ssh://kdreyer@git.example.com/ubuntu/mypkg']
+        assert self.last_cmd == ['git', 'clone',
+                                 'ssh://kdreyer@git.example.com/ubuntu/mypkg']
