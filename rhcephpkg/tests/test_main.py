@@ -20,7 +20,7 @@ class TestConfigFile(object):
         # Set $HOME to a known-empty directory:
         monkeypatch.setenv('HOME', str(tmpdir))
         with pytest.raises(SystemExit):
-            rhcpkg = RHCephPkg()
+            RHCephPkg()
 
     def test_working_config_file(self, monkeypatch):
         monkeypatch.setenv('HOME', FIXTURES_DIR)
