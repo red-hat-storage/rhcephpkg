@@ -61,7 +61,7 @@ class PyTest(TestCommand):
     def run_tests(self):
         #import here, cause outside the eggs aren't loaded
         import pytest
-        errno = pytest.main('rhcephpkg/tests ' + self.pytest_args)
+        errno = pytest.main('rhcephpkg --flake8 ' + self.pytest_args)
         sys.exit(errno)
 
 
@@ -87,6 +87,7 @@ setup(
     ],
     tests_require    = [
         'pytest',
+        'pytest-flake8',
         'httpretty',
     ],
     cmdclass = {'test': PyTest, 'release': ReleaseCommand},
