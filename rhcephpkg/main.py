@@ -121,7 +121,6 @@ class RHCephPkg(object):
     def localbuild(self):
         """ Build a package on the local system, using pbuilder. """
         pkg_name = os.path.basename(os.getcwd())
-        # Get our current branch's name
         os.environ['BUILDER'] = 'pbuilder'
         j_arg = '-j%d' % self._get_num_cpus()
         # FIXME: stop hardcoding trusty. Use the git branch name instead,
