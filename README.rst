@@ -56,6 +56,8 @@ Commands
 
 * ``rhcephpkg localbuild`` - Perform a local build using pbuilder.
 
+* ``rhcephpkg source`` - Build a source package on the local system.
+
 Installing
 ----------
 

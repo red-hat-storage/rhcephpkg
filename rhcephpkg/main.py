@@ -133,3 +133,10 @@ class RHCephPkg(object):
 
         log.info('building %s with pbuilder', pkg_name)
         subprocess.check_call(cmd)
+
+    def source(self):
+        """ Build a source package on the local system. """
+        cmd = ['git-buildpackage', '--git-tag', '--git-retag', '-S',
+               '-us', '-uc']
+        log.info(' '.join(cmd))
+        subprocess.check_call(cmd)
