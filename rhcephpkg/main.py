@@ -119,7 +119,8 @@ class RHCephPkg(object):
         if os.path.exists(pkg):
             log.error('%s already exists in current working directory.', pkg)
             exit(1)
-        pkg_url = self.config['gitbaseurl'] % {'user': self.config['user'], 'module': pkg}
+        pkg_url = self.config['gitbaseurl'] % {'user': self.config['user'],
+                                               'module': pkg}
         cmd = ['git', 'clone', pkg_url]
         subprocess.check_call(cmd)
 
