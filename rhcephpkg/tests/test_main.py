@@ -46,6 +46,27 @@ class TestGetNumCpus(object):
         assert result == 4
 
 
+class TestGetJArg(object):
+    """ Test private _get_j_arg() function """
+
+    @pytest.mark.parametrize('cpus,ram,expected', [
+        (2, 8,  '-j2'),
+        (2, 16, '-j2'),
+        (2, 32, '-j2'),
+        (4, 8,  '-j2'),
+        (4, 16, '-j4'),
+        (4, 32, '-j4'),
+        (8, 8,  '-j2'),
+        (8, 16, '-j4'),
+        (8, 32, '-j8'),
+    ])
+    def test_get_j_arg(self, cpus, ram, expected, monkeypatch):
+        monkeypatch.setenv('HOME', FIXTURES_DIR)
+        rhcpkg = RHCephPkg()
+        result = rhcpkg._get_j_arg(cpus=cpus, total_ram_gb=ram)
+        assert result == expected
+
+
 class TestHelloJenkins(object):
 
     @classmethod
