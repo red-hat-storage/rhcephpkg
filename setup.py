@@ -13,6 +13,18 @@ metadata = dict(re.findall("__([a-z]+)__\s*=\s*'([^']+)'", module_file))
 version = metadata['version']
 
 
+class NewVersionCommand(Command):
+    """ Bump the version number on a new "version-" branch """
+
+    def run(self):
+        # Bump version and report the number
+        export `bumpversion patch --list rhcephpkg/__init__.py`
+        # Checkout a new branch with this version number
+        echo git checkout -b version-$new_version
+        # Make a new commit with this number
+        echo git commit -m "version $new_version"
+
+
 class ReleaseCommand(Command):
     """ Tag and push a new release. """
 
@@ -90,5 +102,7 @@ setup(
         'pytest-flake8',
         'httpretty',
     ],
-    cmdclass = {'test': PyTest, 'release': ReleaseCommand},
+    cmdclass = {'newversion': NewVersionCommand,
+                'test': PyTest,
+                'release': ReleaseCommand},
 )
