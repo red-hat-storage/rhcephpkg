@@ -29,6 +29,9 @@ Configuration
   token=5d41402abc4b2a76b9719d911017c592
   url=https://ceph-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/
 
+  [rhcephpkg.chacra]
+  url=https://chacra.example.com/
+
 Substitute your settings:
 
 * ``user`` is your Red Hat Kerberos UID
@@ -50,6 +53,8 @@ Commands
   run ``sudo apt-get install krb5-user`` and set your realm to "REDHAT.COM".
 
 * ``rhcephpkg build`` - Trigger a build in Jenkins.
+
+* ``rhcephpkg download`` - Download a build's artifacts from chacra.
 
 * ``rhcephpkg hello`` - Test Jenkins authentication. Use this to verify your
   ``user`` and ``token`` settings.

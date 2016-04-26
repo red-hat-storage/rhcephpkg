@@ -1,5 +1,7 @@
+import json
 import os
 import pytest
+import re
 
 import httpretty
 try:
@@ -29,6 +31,7 @@ class TestConfigFile(object):
             'gitbaseurl': 'ssh://%(user)s@git.example.com/ubuntu/%(module)s',
             'jenkins_token': '5d41402abc4b2a76b9719d911017c592',
             'jenkins_url': 'https://ceph-jenkins.example.com/',
+            'chacra_url': 'https://chacra.example.com/',
         }
         rhcpkg = RHCephPkg()
         assert rhcpkg.config == expected_config
@@ -120,3 +123,48 @@ class TestClone(object):
         rhcpkg.clone()
         assert self.last_cmd == ['git', 'clone',
                                  'ssh://kdreyer@git.example.com/ubuntu/mypkg']
+
+
+class TestDownload(object):
+
+    @classmethod
+    def setup_class(cls):
+        httpretty.enable()
+        httpretty.HTTPretty.allow_net_connect = False
+
+    @classmethod
+    def teardown_class(cls):
+        httpretty.disable()
+
+    def test_basic_download(self, monkeypatch, tmpdir):
+        monkeypatch.setenv('HOME', FIXTURES_DIR)
+        fake_args = ['rhcephpkg', 'download', 'ceph_10.2.0-2redhat1trusty']
+        # Fake build API endpoint.
+        url = 'https://chacra.example.com' \
+              '/binaries/ceph/10.2.0-2redhat1trusty/ubuntu/all'
+        # Fake JSON payload for the build API endpoint above.
+        payload = {'source': ['ceph_10.2.0-2redhat1trusty.debian.tar.gz',
+                              'ceph_10.2.0-2redhat1trusty.dsc',
+                              'ceph_10.2.0-2redhat1trusty_amd64.changes',
+                              'ceph_10.2.0.orig.tar.gz'],
+                   'amd64': ['libcephfs1-dbg_10.2.0-2redhat1trusty_amd64.deb',
+                             'librbd-dbg_10.2.0-2redhat1trusty_amd64.deb',
+                             'ceph_10.2.0-2redhat1trusty_amd64.deb',
+                             'radosgw_10.2.0-2redhat1trusty_amd64.deb'],
+                   'noarch': ['libcephfs-java_10.2.0-2redhat1trusty_all.deb'],
+                   }
+
+        httpretty.register_uri(httpretty.GET,
+                               url,
+                               body=json.dumps(payload),
+                               content_type='text/json')
+        httpretty.register_uri(httpretty.GET,
+                               re.compile('^%s/.+' % url),
+                               body='(fake binary file contents)',
+                               content_type='application/octet-stream')
+        monkeypatch.setattr('sys.argv', fake_args)
+        monkeypatch.chdir(tmpdir)
+        RHCephPkg()
+        for binaries in payload.values():
+            for binary in binaries:
+                assert os.path.isfile(binary)

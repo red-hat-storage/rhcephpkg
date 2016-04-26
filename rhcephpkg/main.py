@@ -4,6 +4,8 @@ import os
 import posixpath
 import json
 import re
+import shutil
+import six
 import subprocess
 import sys
 from six.moves import configparser
@@ -39,6 +41,8 @@ class RHCephPkg(object):
             self.build()
         elif sys.argv[1] == 'clone':
             self.clone()
+        elif sys.argv[1] == 'download':
+            self.download()
         elif sys.argv[1] == 'hello':
             self.hello_jenkins()
         elif sys.argv[1] == 'localbuild':
@@ -57,6 +61,7 @@ class RHCephPkg(object):
             config['gitbaseurl'] = configp.get('rhcephpkg', 'gitbaseurl')
             config['jenkins_token'] = configp.get('rhcephpkg.jenkins', 'token')
             config['jenkins_url'] = configp.get('rhcephpkg.jenkins', 'url')
+            config['chacra_url'] = configp.get('rhcephpkg.chacra', 'url')
         except configparser.Error as err:
             log.error('Problem parsing .rhcephpkg.conf: %s', err.message)
             exit(1)
@@ -124,6 +129,43 @@ class RHCephPkg(object):
                                                'module': pkg}
         cmd = ['git', 'clone', pkg_url]
         subprocess.check_call(cmd)
+
+    def download(self):
+        """
+        Download a build's entire artifacts from chacra.
+
+        Pass an argv like "ceph_10.2.0-2redhat1trusty"
+        """
+        try:
+            build = sys.argv[2]
+        except IndexError:
+            msg = 'download: specify a build to download, such as ' \
+                  'ceph_10.2.0-2redhat1trusty'
+            raise SystemExit(msg)
+        (pkg, version) = build.split('_')
+        base_url = self.config['chacra_url']
+        build_url = posixpath.join(base_url, 'binaries/', pkg, version,
+                                   'ubuntu', 'all')
+        log.info('searching %s for builds' % build_url)
+        build_response = urlopen(Request(build_url))
+        headers = build_response.headers
+        if six.PY2:
+            encoding = headers.getparam('charset') or 'utf-8'
+            # if encoding is None:
+            #    encoding = 'utf-8'
+        else:
+            encoding = headers.get_content_charset(failobj='utf-8')
+        payload = json.loads(build_response.read().decode(encoding))
+        for arch, binaries in six.iteritems(payload):
+            for binary in binaries:
+                if os.path.isfile(binary):
+                    log.info('skipping %s' % binary)
+                    continue
+                log.info('downloading %s' % binary)
+                binary_url = posixpath.join(build_url, arch, binary) + '/'
+                response = urlopen(Request(binary_url))
+                with open(binary, 'wb') as fp:
+                    shutil.copyfileobj(response, fp)
 
     def localbuild(self):
         """ Build a package on the local system, using pbuilder. """
