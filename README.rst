@@ -79,4 +79,5 @@ TODO
   <https://pypi.python.org/pypi/tambo>`_
 * Add more commands, like ``rhcephpkg patch`` (equivalent of "rdopkg patch",
   and runs "gbp-pq export" under the hood)
-
+* Update for the newer git-buildpackage cli on Ubuntu Xenial (where everything
+  is a sub-command of ``gbp``.)
