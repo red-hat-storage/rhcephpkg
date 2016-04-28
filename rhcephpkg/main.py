@@ -112,8 +112,8 @@ class RHCephPkg(object):
         cmd = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
         branch_name = subprocess.check_output(cmd).rstrip()
 
-        log.info('building %s branch %s at %s/job/build-package',
-                 pkg_name, branch_name, self.jenkins.url)
+        log.info('building %s branch %s at %s', pkg_name, branch_name,
+                 posixpath.join(self.jenkins.url, 'job', 'build-package'))
         job_params = {'PKG_NAME': pkg_name, 'BRANCH': branch_name}
 
         self.jenkins.build_job('build-package', parameters=job_params,
