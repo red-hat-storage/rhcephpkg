@@ -15,7 +15,7 @@ from six.moves.http_client import BadStatusLine
 
 from jenkins import Jenkins, JenkinsException
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 log = logging.getLogger('rhcephpkg')
 
 
