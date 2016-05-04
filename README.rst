@@ -22,15 +22,15 @@ Configuration
 
   [rhcephpkg]
   user=kdreyer
-  gitbaseurl = ssh://%(user)s@git.engineering.redhat.com/srv/git/users/kdreyer/ubuntu/%(module)s
-  anongiturl = git://git.engineering.redhat.com/users/kdreyer/ubuntu/%(module)s
+  gitbaseurl = ssh://%(user)s@code.engineering.redhat.com/rcm/ceph-ubuntu/%(module)s
+  anongiturl = git://git.app.eng.bos.redhat.com/rcm/ceph-ubuntu/%(module)s.git
 
   [rhcephpkg.jenkins]
   token=5d41402abc4b2a76b9719d911017c592
-  url=https://ceph-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/
+  url=https://rcm-jenkins.app.eng.bos.redhat.com/
 
   [rhcephpkg.chacra]
-  url=https://chacra.example.com/
+  url=https://ubuntu-ceph-test.brew.prod.eng.bos.redhat.com/
 
 Substitute your settings:
 
