@@ -175,7 +175,7 @@ class RHCephPkg(object):
         j_arg = self._get_j_arg(cpus)
         # FIXME: stop hardcoding trusty. Use the git branch name instead,
         # translating "-ubuntu" into this local computer's own distro.
-        cmd = ['git-buildpackage', '--git-dist=trusty', '--git-arch=amd64',
+        cmd = ['gbp', 'buildpackage', '--git-dist=trusty', '--git-arch=amd64',
                '--git-verbose', '--git-pbuilder', j_arg, '-us', '-uc']
         # TODO: we should also probably check parent dir for leftovers and warn
         # the user to delete them (or delete them ourselves?)
@@ -185,7 +185,7 @@ class RHCephPkg(object):
 
     def source(self):
         """ Build a source package on the local system. """
-        cmd = ['git-buildpackage', '--git-tag', '--git-retag', '-S',
+        cmd = ['gbp', 'buildpackage', '--git-tag', '--git-retag', '-S',
                '-us', '-uc']
         log.info(' '.join(cmd))
         subprocess.check_call(cmd)
