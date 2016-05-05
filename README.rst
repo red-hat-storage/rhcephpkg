@@ -48,9 +48,8 @@ Commands
   <http://honk.sigxcpu.org/projects/git-buildpackage/manual-html/gbp.html>`_
   suite of tools.
 
-  The ``clone`` operation uses kerberos for SSH authentication to the Git
-  server. If you have not yet installed or configured Kerberos on your system,
-  run ``sudo apt-get install krb5-user`` and set your realm to "REDHAT.COM".
+  The ``clone`` operation uses your SSH key, which must be configured in
+  Gerrit.
 
 * ``rhcephpkg build`` - Trigger a build in Jenkins.
 
