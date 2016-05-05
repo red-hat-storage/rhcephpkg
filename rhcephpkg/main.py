@@ -175,8 +175,10 @@ class RHCephPkg(object):
         j_arg = self._get_j_arg(cpus)
         # FIXME: stop hardcoding trusty. Use the git branch name instead,
         # translating "-ubuntu" into this local computer's own distro.
-        cmd = ['gbp', 'buildpackage', '--git-dist=trusty', '--git-arch=amd64',
-               '--git-verbose', '--git-pbuilder', j_arg, '-us', '-uc']
+        distro = 'trusty'
+        cmd = ['gbp', 'buildpackage', '--git-dist=%s' % distro,
+               '--git-arch=amd64', '--git-verbose', '--git-pbuilder', j_arg,
+               '-us', '-uc']
         # TODO: we should also probably check parent dir for leftovers and warn
         # the user to delete them (or delete them ourselves?)
 
