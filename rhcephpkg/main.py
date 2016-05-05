@@ -209,4 +209,5 @@ class RHCephPkg(object):
             mem_gib = mem_bytes/(1024.**3)  # decimal, eg. 7.707 on 8GB system
             # Round up to the nearest GB for our purposes.
             total_ram_gb = math.ceil(mem_gib)
-        return '-j%d' % min(cpus, total_ram_gb / 4)
+        number = min(cpus, total_ram_gb / 4)
+        return '-j%d' % max(number, 1)

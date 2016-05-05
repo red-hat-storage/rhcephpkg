@@ -53,6 +53,7 @@ class TestGetJArg(object):
     """ Test private _get_j_arg() function """
 
     @pytest.mark.parametrize('cpus,ram,expected', [
+        (2, 2,  '-j1'),
         (2, 8,  '-j2'),
         (2, 16, '-j2'),
         (2, 32, '-j2'),
