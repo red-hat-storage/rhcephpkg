@@ -178,7 +178,7 @@ class RHCephPkg(object):
         distro = 'trusty'
         pbuilder_cache = '/var/cache/pbuilder/base-%s-amd64.tgz' % distro
         if not os.path.isfile(pbuilder_cache):
-            cmd = ['sudo', 'pbuilder', 'create' '--debootstrapopts'
+            cmd = ['sudo', 'pbuilder', 'create', '--debootstrapopts',
                    '--variant=buildd', '--basetgz', pbuilder_cache,
                    '--distribution', distro]
             log.info('initializing pbuilder cache %s', pbuilder_cache)
