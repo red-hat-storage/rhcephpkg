@@ -37,18 +37,6 @@ class TestConfigFile(object):
         assert rhcpkg.config == expected_config
 
 
-class TestGetNumCpus(object):
-    """ Test private _get_num_cpus() function """
-
-    def test_get_num_cpus(self, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
-        rhcpkg = RHCephPkg()
-        # Pass a fake cpuinfo file:
-        cpuinfo = os.path.join(FIXTURES_DIR, 'cpuinfo')
-        result = rhcpkg._get_num_cpus(cpuinfo=cpuinfo)
-        assert result == 4
-
-
 class TestGetJArg(object):
     """ Test private _get_j_arg() function """
 

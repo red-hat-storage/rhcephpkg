@@ -3,11 +3,11 @@ import logging
 import os
 import posixpath
 import json
-import re
 import shutil
 import six
 import subprocess
 import sys
+from multiprocessing import cpu_count
 from six.moves import configparser
 from six.moves.urllib.request import Request, urlopen
 from six.moves.urllib.error import HTTPError
@@ -66,14 +66,6 @@ class RHCephPkg(object):
             log.error('Problem parsing .rhcephpkg.conf: %s', err.message)
             exit(1)
         return config
-
-    def _get_num_cpus(self, cpuinfo='/proc/cpuinfo'):
-        """ Get the number of CPUs from /proc/cpuinfo.
-            (We will pass this number to pbuilder.) """
-        pattern = re.compile('^processor')
-        with open(cpuinfo) as f:
-            result = filter(lambda x: pattern.match(x), f.readlines())
-        return len(list(result))
 
     def hello_jenkins(self):
         """ Authenticate to Jenkins and print our username to STDOUT.
@@ -171,8 +163,7 @@ class RHCephPkg(object):
         """ Build a package on the local system, using pbuilder. """
         pkg_name = os.path.basename(os.getcwd())
         os.environ['BUILDER'] = 'pbuilder'
-        cpus = self._get_num_cpus()
-        j_arg = self._get_j_arg(cpus)
+        j_arg = self._get_j_arg(cpu_count())
         # FIXME: stop hardcoding trusty. Use the git branch name instead,
         # translating "-ubuntu" into this local computer's own distro.
         distro = 'trusty'
