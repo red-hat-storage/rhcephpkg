@@ -74,7 +74,5 @@ Pre-built Ubuntu Trusty packages are available::
 
 TODO
 ----
-* Replace the hacky argparsing with `tambo
-  <https://pypi.python.org/pypi/tambo>`_
 * Add more commands, like ``rhcephpkg patch`` (equivalent of "rdopkg patch",
   and runs "gbp pq export" under the hood)
