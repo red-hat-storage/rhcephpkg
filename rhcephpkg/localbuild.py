@@ -11,12 +11,15 @@ class Localbuild(object):
     help_menu = 'build a package on the local system'
     _help = """
 Build a package on the local system, using pbuilder.
+
+Options:
+--dist    "xenial" or "trusty". Defaults to "trusty".
 """
     name = 'localbuild'
 
     def __init__(self, argv):
         self.argv = argv
-        self.options = []
+        self.options = ('--dist',)
 
     def main(self):
         self.parser = Transport(self.argv, options=self.options)
@@ -26,6 +29,11 @@ Build a package on the local system, using pbuilder.
         # FIXME: stop hardcoding trusty. Use the git branch name instead,
         # translating "-ubuntu" into this local computer's own distro.
         distro = 'trusty'
+        # Allow user to override the distro.
+        if self.parser.has('--dist'):
+            if self.parser.get('--dist') is None:
+                raise SystemExit('Specify a distro to --dist')
+            distro = self.parser.get('--dist')
 
         self._run(distro)
 

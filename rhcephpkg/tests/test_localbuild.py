@@ -17,16 +17,28 @@ class TestLocalbuild(object):
         self.last_cmd = cmd
         return 0
 
-    def test_trusty_localbuild(self, monkeypatch):
+    @pytest.mark.parametrize('args,expected', [
+        (('localbuild'),                     '--git-dist=trusty'),
+        (('localbuild', '--dist', 'trusty'), '--git-dist=trusty'),
+        (('localbuild', '--dist', 'xenial'), '--git-dist=xenial'),
+    ])
+    def test_localbuild(self, args, expected, monkeypatch):
         monkeypatch.setenv('HOME', FIXTURES_DIR)
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
         monkeypatch.setattr('rhcephpkg.Localbuild._get_j_arg',
                             lambda *a: '-j2')
-        localbuild = Localbuild(())
-        localbuild._run('trusty')
-        assert self.last_cmd == ['gbp', 'buildpackage', '--git-dist=trusty',
+        localbuild = Localbuild(args)
+        localbuild.main()
+        assert self.last_cmd == ['gbp', 'buildpackage', expected,
                                  '--git-arch=amd64', '--git-verbose',
                                  '--git-pbuilder', '-j2', '-us', '-uc']
+
+    def test_missing_arg(self, monkeypatch):
+        monkeypatch.setenv('HOME', FIXTURES_DIR)
+        localbuild = Localbuild(('localbuild', '--dist'))
+        with pytest.raises(SystemExit) as e:
+            localbuild.main()
+        assert 'Specify a distro to --dist' in str(e.value)
 
 
 class TestGetJArg(object):
