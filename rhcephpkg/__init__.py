@@ -9,4 +9,4 @@ from .source import Source
 __all__ = ['log', 'Build', 'Clone', 'Download', 'Hello', 'Localbuild',
            'Source']
 
-__version__ = '1.1.0'
+__version__ = '1.1.1'
