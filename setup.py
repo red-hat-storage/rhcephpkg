@@ -67,27 +67,27 @@ class PyTest(TestCommand):
 from setuptools import setup
 
 setup(
-    name             = 'rhcephpkg',
-    description      = 'Packaging tool for Red Hat Ceph Storage product',
-    packages         = ['rhcephpkg'],
-    author           = 'Ken Dreyer',
-    author_email     = 'kdreyer [at] redhat.com',
-    url              = 'https://github.com/red-hat-storage/rhcephpkg',
-    version          = metadata['version'],
-    license          = 'MIT',
-    zip_safe         = False,
-    keywords         = 'packaging, build, rpkg',
-    long_description = LONG_DESCRIPTION,
-    scripts          = ['bin/rhcephpkg'],
-    install_requires = [
+    name='rhcephpkg',
+    description='Packaging tool for Red Hat Ceph Storage product',
+    packages=['rhcephpkg'],
+    author='Ken Dreyer',
+    author_email='kdreyer [at] redhat.com',
+    url='https://github.com/red-hat-storage/rhcephpkg',
+    version=metadata['version'],
+    license='MIT',
+    zip_safe=False,
+    keywords='packaging, build, rpkg',
+    long_description=LONG_DESCRIPTION,
+    scripts=['bin/rhcephpkg'],
+    install_requires=[
         'python-jenkins',
         'six',
         'tambo>=0.1.0',
     ],
-    tests_require    = [
+    tests_require=[
         'pytest',
         'pytest-flake8',
         'httpretty',
     ],
-    cmdclass = {'test': PyTest, 'release': ReleaseCommand},
+    cmdclass={'test': PyTest, 'release': ReleaseCommand},
 )
