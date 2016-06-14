@@ -60,6 +60,8 @@ Commands
 
 * ``rhcephpkg localbuild`` - Perform a local build using pbuilder.
 
+* ``rhcephpkg patch`` - Apply a patch-queue branch to a package.
+
 * ``rhcephpkg source`` - Build a source package on the local system.
 
 Installing
@@ -70,9 +72,3 @@ Pre-built Ubuntu Trusty packages are available::
   sudo apt-add-repository ppa:kdreyer-redhat/rhceph
   sudo apt-get update
   sudo apt-get install rhcephpkg
-
-
-TODO
-----
-* Add more commands, like ``rhcephpkg patch`` (equivalent of "rdopkg patch",
-  and runs "gbp pq export" under the hood)
