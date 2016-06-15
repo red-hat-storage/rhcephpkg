@@ -2,6 +2,7 @@ import re
 import subprocess
 from tambo import Transport
 # import rhcephpkg.log as log
+import rhcephpkg.util as util
 
 
 class Patch(object):
@@ -28,8 +29,7 @@ Generate patches from a patch-queue branch.
     def _run(self):
         """ Generate quilt patch series with gbp pq, and update d/rules """
 
-        cmd = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
-        patches_branch = subprocess.check_output(cmd).rstrip()
+        patches_branch = util.current_branch()
         if not patches_branch.startswith('patch-queue/'):
             raise SystemExit('%s is not a patch-queue branch' % patches_branch)
 
