@@ -37,7 +37,7 @@ Generate patches from a patch-queue branch.
 
         # Get the new sha1 to insert into the $COMMIT variable in d/rules
         cmd = ['git', 'rev-parse', patches_branch]
-        patches_sha1 = subprocess.check_output(cmd)
+        patches_sha1 = subprocess.check_output(cmd).rstrip()
 
         # Git-buildpackage pq operation
         cmd = ['gbp', 'pq', 'export']
