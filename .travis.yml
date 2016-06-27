@@ -16,6 +16,8 @@ install:
     #   virtualenv.
   - pip install pytest-flake8
   - pip install pytest-cov python-coveralls
+    # Install the git-buildpackage version from Ubuntu Trusty
+  - "[ ${TRAVIS_PYTHON_VERSION:0:1} == 2 ] && pip install -e git+https://github.com/agx/git-buildpackage@debian/0.6.9#egg=git-buildpackage-0.6.9 || :"
 script:
   - python setup.py test -v -a "--cov-config .coveragerc --cov=rhcephpkg"
 after_success:
