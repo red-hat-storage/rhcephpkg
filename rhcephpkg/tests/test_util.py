@@ -1,5 +1,6 @@
 import os
 import pytest
+import py.path
 from rhcephpkg import util
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -53,3 +54,17 @@ class TestUtilPackageName(object):
         tmpdir.mkdir('mypkg')
         monkeypatch.chdir(tmpdir.join('mypkg'))
         assert util.package_name() == 'mypkg'
+
+
+class TestUtilChangelog(object):
+
+    def test_bump_changelog(self, tmpdir, monkeypatch):
+        """ test bumping a debian changelog """
+        monkeypatch.setenv('HOME', FIXTURES_DIR)
+        monkeypatch.chdir(tmpdir)
+        # Our /debian/changelog fixture:
+        source = py.path.local(FIXTURES_DIR).join('changelog')
+        # Copy this fixture file to our tmpdir.
+        source.copy(tmpdir.mkdir('debian'))
+        assert util.bump_changelog(['some change']) is True
+        assert str(util.get_deb_version()) == '10.2.0-5redhat1'
