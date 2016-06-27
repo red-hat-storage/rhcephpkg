@@ -14,7 +14,7 @@ install:
     # * 'python setup.py test' uses EasyInstall, so it will not upgrade a
     #   package to a newer version if the package is already present in a
     #   virtualenv.
-  - pip install --upgrade pytest>=2.8
+  - pip install pytest-flake8
   - pip install pytest-cov python-coveralls
 script:
   - python setup.py test -v -a "--cov-config .coveragerc --cov=rhcephpkg"
