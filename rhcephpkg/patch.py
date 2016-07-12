@@ -1,5 +1,6 @@
 import re
 import subprocess
+import tempfile
 from tambo import Transport
 import rhcephpkg.log as log
 import rhcephpkg.util as util
@@ -81,10 +82,20 @@ Generate patches from a patch-queue branch.
             changelog.append(change)
         util.bump_changelog(changelog)
 
-        # TODO: commit everything with a standard commit message
-        # cmd = ['git', 'commit', 'debian/changelog', 'debian/patches',
-        #        'debian/rules', '-m', 'add patches from %s' % patches_branch]
-        # subprocess.check_call(cmd)
+        # Assemble a standard commit message string "clog".
+        clog = "debian: %s\n" % util.get_deb_version()
+        clog += "\n"
+        clog += "Add patches from %s\n" % patches_branch
+        clog += "\n"
+        clog += util.format_changelog(changelog)
+
+        # Commit everything with the standard commit message.
+        with tempfile.NamedTemporaryFile() as temp:
+            temp.write(clog)
+            temp.flush()
+            cmd = ['git', 'commit', 'debian/changelog', 'debian/patches',
+                   'debian/rules', '-F', temp.name]
+            subprocess.check_call(cmd)
 
     def get_rhbzs(self, patch):
         bzs = re.findall(BZ_REGEX, patch.subject)
