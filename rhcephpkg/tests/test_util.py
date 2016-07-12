@@ -58,6 +58,12 @@ class TestUtilPackageName(object):
 
 class TestUtilChangelog(object):
 
+    def test_format_changelog(self, tmpdir, monkeypatch):
+        """ test bumping a debian changelog """
+        changes = ['a change', 'some other change', 'third change']
+        expected = "  * a change\n  * some other change\n  * third change\n"
+        assert util.format_changelog(changes) == expected
+
     def test_bump_changelog(self, tmpdir, monkeypatch):
         """ test bumping a debian changelog """
         monkeypatch.setenv('HOME', FIXTURES_DIR)

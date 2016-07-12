@@ -74,18 +74,25 @@ def bump_changelog(changes):
     footer = " -- %s <%s>  %s\n" % (get_user_fullname(),
                                     get_user_email(),
                                     time.strftime('%a, %d %b %Y %T %z'))
-    wrapper = TextWrapper(initial_indent='  * ', subsequent_indent='    ')
     with open('debian/changelog', 'w') as fileh:
         fileh.write(header)
         fileh.write("\n")
-        for change in changes:
-            fileh.write(wrapper.fill(change))
-            fileh.write("\n")
+        fileh.write(format_changelog(changes))
         fileh.write("\n")
         fileh.write(footer)
         fileh.write("\n")
         fileh.write(orig)
     return True
+
+
+def format_changelog(changes):
+    """ Return a formatted multi-line string describing each change. """
+    wrapper = TextWrapper(initial_indent='  * ', subsequent_indent='    ')
+    clog = ""
+    for change in changes:
+        clog += wrapper.fill(change)
+        clog += "\n"
+    return clog
 
 
 def get_deb_version():
