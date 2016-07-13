@@ -72,3 +72,23 @@ Pre-built Ubuntu Trusty packages are available::
   sudo apt-add-repository ppa:kdreyer-redhat/rhceph
   sudo apt-get update
   sudo apt-get install rhcephpkg
+
+TODO
+----
+
+* ``rhcephpkg push`` - Runs ``git push origin --tags`` and then ``git push
+   origin``. This will help with CI during rebases, so that (Gerrit/Jenkins)
+   will pick up the branch change only after the new tags are present.
+
+* ``rhcephpkg dch`` - Bump the changelog according to our "redhat" version
+  number change pattern. This will help make rebases faster.
+
+* ``rhcephpkg merge-patches`` Do a fast-forward merge from the rdopkg-style
+  "patches" remote. For example to merge the ceph-2 patches branch:
+  ``git merge --ff-only patches/ceph-2-rhel-patches``. (This command would
+  need to automatically determine the name of the rdopkg patches branch.)
+
+* ``rhcephpkg amend`` - Amend the last Git commit to make the commit
+  message align with the last ``debian/changelog`` entry. This would be similar
+  to how ``rdopkg amend`` works (and some of this functionality is already
+  present in ``rhcephpkg patch``).
