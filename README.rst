@@ -76,9 +76,10 @@ Pre-built Ubuntu Trusty packages are available::
 TODO
 ----
 
-* ``rhcephpkg push`` - Runs ``git push origin --tags`` and then ``git push
-   origin``. This will help with CI during rebases, so that (Gerrit/Jenkins)
-   will pick up the branch change only after the new tags are present.
+* ``rhcephpkg push`` - Runs ``git push origin --tags`` and then
+  ``git push origin``. This will help with CI during rebases, so that
+  Jenkins (via Gerrit) will pick up the branch change only after the new tags
+  are already present.
 
 * ``rhcephpkg dch`` - Bump the changelog according to our "redhat" version
   number change pattern. This will help make rebases faster.
