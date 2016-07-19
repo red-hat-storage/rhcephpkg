@@ -97,6 +97,11 @@ Generate patches from a patch-queue branch.
                    'debian/rules', '-F', temp.name]
             subprocess.check_call(cmd)
 
+        # Summarize this commit on STDOUT for the developer.
+        # (This matches the behavior of "rdopkg patch".)
+        cmd = ['git', '--no-pager', 'log', '--name-status', 'HEAD~..HEAD']
+        subprocess.check_call(cmd)
+
     def get_rhbzs(self, patch):
         bzs = re.findall(BZ_REGEX, patch.subject)
         bzs.extend(re.findall(BZ_REGEX, patch.long_desc))
