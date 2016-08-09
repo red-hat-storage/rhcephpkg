@@ -18,7 +18,7 @@ class TestLocalbuild(object):
         return 0
 
     @pytest.mark.parametrize('args,expected', [
-        (('localbuild'),                     '--git-dist=trusty'),
+        (('localbuild'), '--git-dist=trusty'),
         (('localbuild', '--dist', 'trusty'), '--git-dist=trusty'),
         (('localbuild', '--dist', 'xenial'), '--git-dist=xenial'),
     ])
@@ -45,14 +45,14 @@ class TestGetJArg(object):
     """ Test private _get_j_arg() function """
 
     @pytest.mark.parametrize('cpus,ram,expected', [
-        (2, 2,  '-j1'),
-        (2, 8,  '-j2'),
+        (2, 2, '-j1'),
+        (2, 8, '-j2'),
         (2, 16, '-j2'),
         (2, 32, '-j2'),
-        (4, 8,  '-j2'),
+        (4, 8, '-j2'),
         (4, 16, '-j4'),
         (4, 32, '-j4'),
-        (8, 8,  '-j2'),
+        (8, 8, '-j2'),
         (8, 16, '-j4'),
         (8, 32, '-j8'),
     ])
