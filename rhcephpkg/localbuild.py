@@ -78,7 +78,8 @@ Options:
         if total_ram_gb is None:
             page_size = os.sysconf('SC_PAGE_SIZE')
             mem_bytes = page_size * os.sysconf('SC_PHYS_PAGES')
-            mem_gib = mem_bytes/(1024.**3)  # decimal, eg. 7.707 on 8GB system
+            # mem_gib is a decimal, eg. 7.707 on 8GB system
+            mem_gib = mem_bytes / (1024. ** 3)
             # Round up to the nearest GB for our purposes.
             total_ram_gb = math.ceil(mem_gib)
         number = min(cpus, total_ram_gb / 4)
