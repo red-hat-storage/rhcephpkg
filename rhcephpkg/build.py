@@ -7,8 +7,7 @@ import rhcephpkg.util as util
 
 
 def _build_job_fixed(self, name, parameters, token):
-    """ Workaround for LP #1177831 """
-    # https://bugs.launchpad.net/python-jenkins/+bug/1177831
+    """ Workaround for https://bugs.launchpad.net/bugs/1177831 """
     import urllib2  # NOQA
     # Note the final empty string argument here:
     return self.jenkins_open(urllib2.Request(
@@ -54,7 +53,7 @@ Build a package in Jenkins.
     def _has_broken_build_job(self):
         # Ubuntu Trusty ships python-jenkins 0.2.1-0ubuntu1, and this version
         # has a broken build_job() method. See
-        # https://bugs.launchpad.net/python-jenkins/+bug/1177831 .
+        # https://bugs.launchpad.net/bugs/1177831 .
         # This bug was fixed in python-jenkins v0.3.2 upstream.
         v = get_distribution('python_jenkins').version
         return parse_version(v) < parse_version('0.3.2')
