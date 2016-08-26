@@ -40,6 +40,11 @@ Build a package in Jenkins.
         branch_name = util.current_branch()
         jenkins = util.jenkins_connection()
 
+        if branch_name.startswith('patch-queue/'):
+            log.error('%s a patch-queue branch' % branch_name)
+            msg = 'You can switch to the debian branch with "gbp pq switch"'
+            raise SystemExit(msg)
+
         log.info('building %s branch %s at %s', pkg_name, branch_name,
                  posixpath.join(jenkins.url, 'job', 'build-package'))
         job_params = {'PKG_NAME': pkg_name, 'BRANCH': branch_name}
