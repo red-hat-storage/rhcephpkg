@@ -45,7 +45,11 @@ Positional Arguments:
         except configparser.Error as err:
             raise SystemExit('Problem parsing .rhcephpkg.conf: %s',
                              err.message)
-        (pkg, version) = build.split('_')
+        try:
+            (pkg, version) = build.split('_')
+        except ValueError:
+            log.error('%s is not a valid package build N-V-R' % build)
+            return self.parser.print_help()
         build_url = posixpath.join(base_url, 'binaries/', pkg, version,
                                    'ubuntu', 'all')
         log.info('searching %s for builds' % build_url)
