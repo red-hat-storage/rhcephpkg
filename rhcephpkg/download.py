@@ -32,7 +32,7 @@ Positional Arguments:
         try:
             build = self.parser.unknown_commands[0]
         except IndexError:
-            self.help()
+            return self.parser.print_help()
         self._run(build)
 
     def help(self):

@@ -27,7 +27,7 @@ Positional Arguments:
         try:
             pkg = self.parser.unknown_commands[0]
         except IndexError:
-            self.help()
+            return self.parser.print_help()
         self._run(pkg)
 
     def help(self):
