@@ -131,6 +131,7 @@ class DebVersion(object):
         # self.version is like "10.2.0"
         (self.version, release) = full.split('-', 1)
         # self.releaseint is like "4"
+        # TODO: this could fail on hotfixes, like 0.94.9-4.bz1378549redhat2
         self.releaseint = int(release.split('redhat', 1)[0])
         # self.redhatint is like "1"
         self.redhatint = int(release.split('redhat', 2)[1])
