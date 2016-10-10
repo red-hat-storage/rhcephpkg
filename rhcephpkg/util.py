@@ -13,6 +13,24 @@ def current_branch():
     return subprocess.check_output(cmd).rstrip()
 
 
+def current_patches_branch():
+    """ Get our patch-queue branch's name, based on the current branch """
+    current = current_branch()
+    if current.startswith('patch-queue/'):
+        return current
+    else:
+        return 'patch-queue/' + current
+
+
+def current_debian_branch():
+    """ Get our debian branch's name, based on the current branch """
+    current = current_branch()
+    if current.startswith('patch-queue/'):
+        return current[12:]
+    else:
+        return current
+
+
 def config():
     """ Parse an rhcephpkg configuration file and return a ConfigParser object.
     """

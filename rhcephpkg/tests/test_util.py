@@ -24,6 +24,17 @@ class TestUtilCurrentBranch(object):
         assert self.last_cmd == ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
         assert branch == 'fake-branch'
 
+    @pytest.mark.parametrize('current_branch', [
+        'ceph-2-ubuntu',
+        'patch-queue/ceph-2-ubuntu',
+    ])
+    def test_current_patches_and_debian_branches(self, monkeypatch,
+                                                 current_branch):
+        monkeypatch.setattr('rhcephpkg.util.current_branch',
+                            lambda: current_branch)
+        assert util.current_patches_branch() == 'patch-queue/ceph-2-ubuntu'
+        assert util.current_debian_branch() == 'ceph-2-ubuntu'
+
 
 class TestUtilConfig(object):
 

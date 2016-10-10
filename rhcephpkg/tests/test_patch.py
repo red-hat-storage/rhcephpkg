@@ -1,5 +1,4 @@
 import os
-import pytest
 from rhcephpkg import Patch
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -11,15 +10,6 @@ class FakePatch(object):
 
 
 class TestPatch(object):
-
-    def test_wrong_branch(self, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
-        monkeypatch.setattr('rhcephpkg.util.current_branch',
-                            lambda: 'ceph-2-ubuntu')
-        patch = Patch(())
-        with pytest.raises(SystemExit) as e:
-            patch._run()
-        assert str(e.value) == 'ceph-2-ubuntu is not a patch-queue branch'
 
     def test_get_rhbzs(self, monkeypatch):
         p = Patch(())

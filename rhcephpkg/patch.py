@@ -32,9 +32,10 @@ Generate patches from a patch-queue branch.
     def _run(self):
         """ Generate quilt patch series with gbp pq, and update d/rules """
 
-        patches_branch = util.current_branch()
-        if not patches_branch.startswith('patch-queue/'):
-            raise SystemExit('%s is not a patch-queue branch' % patches_branch)
+        # Determine the names of the patch-queue branch and debian branch
+        current_branch = util.current_branch()
+        patches_branch = util.current_patches_branch()
+        debian_branch = util.current_debian_branch()
 
         # TODO: default to fetching from upstream, the way rdopkg patch does.
 
@@ -42,9 +43,10 @@ Generate patches from a patch-queue branch.
         cmd = ['git', 'rev-parse', patches_branch]
         patches_sha1 = subprocess.check_output(cmd).rstrip()
 
-        # Switch to "debian" branch
-        cmd = ['gbp', 'pq', 'switch']
-        subprocess.check_call(cmd)
+        # Switch to "debian" branch if necessary
+        if current_branch != debian_branch:
+            cmd = ['git', 'checkout', debian_branch]
+            subprocess.check_call(cmd)
 
         # Get the original (old) patch series
         old_series = self.read_series_file('debian/patches/series')
