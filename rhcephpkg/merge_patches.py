@@ -11,6 +11,9 @@ class MergePatches(object):
 Fetch the latest patches branch that rdopkg uses, and then fast-forward merge
 that into our local patch-queue branch, so that both branches align.
 
+This command helps to align the patch series between our RHEL packages and our
+Ubuntu packages.
+
 """
     name = 'merge-patches'
 
