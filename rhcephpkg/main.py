@@ -23,6 +23,7 @@ Global Options:
         'download': rhcephpkg.Download,
         'hello': rhcephpkg.Hello,
         'localbuild': rhcephpkg.Localbuild,
+        'merge-patches': rhcephpkg.MergePatches,
         'patch': rhcephpkg.Patch,
         'source': rhcephpkg.Source,
     }

@@ -60,6 +60,9 @@ Commands
 
 * ``rhcephpkg localbuild`` - Perform a local build using pbuilder.
 
+* ``rhcephpkg merge-patches`` - Do a fast-forward merge from the rdopkg-style
+  "patches" remote branch.
+
 * ``rhcephpkg patch`` - Apply a patch-queue branch to a package.
 
 * ``rhcephpkg source`` - Build a source package on the local system.
@@ -83,11 +86,6 @@ TODO
 
 * ``rhcephpkg dch`` - Bump the changelog according to our "redhat" version
   number change pattern. This will help make rebases faster.
-
-* ``rhcephpkg merge-patches`` Do a fast-forward merge from the rdopkg-style
-  "patches" remote. For example to merge the ceph-2 patches branch:
-  ``git merge --ff-only patches/ceph-2-rhel-patches``. (This command would
-  need to automatically determine the name of the rdopkg patches branch.)
 
 * ``rhcephpkg amend`` - Amend the last Git commit to make the commit
   message align with the last ``debian/changelog`` entry. This would be similar
