@@ -39,7 +39,7 @@ class TestMergePatches(object):
         localbuild = MergePatches(())
         localbuild._run()
         # Verify that we run the "git merge" command here.
-        expected = ['git', 'merge', '--ff-only', 'patches/ceph-2-rhel-patches']
+        expected = ['git', 'pull', '--ff-only', 'patches/ceph-2-rhel-patches']
         assert self.last_cmd == expected
 
 

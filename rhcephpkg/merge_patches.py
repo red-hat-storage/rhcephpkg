@@ -36,10 +36,9 @@ that into our local patch-queue branch, so that both branches align.
 
         # Do the merge
         if current_branch == patches_branch:
-            # HEAD is our patch-queue branch. Use "git merge" directly.
-            # For example: "git merge --ff-only patches/ceph-2-rhel-patches"
-            subprocess.check_call(cmd)
-            cmd = ['git', 'merge', '--ff-only',
+            # HEAD is our patch-queue branch. Use "git pull" directly.
+            # For example: "git pull --ff-only patches/ceph-2-rhel-patches"
+            cmd = ['git', 'pull', '--ff-only',
                    'patches/' + rhel_patches_branch]
         else:
             # HEAD is our debian branch. Use "git fetch" to update the
