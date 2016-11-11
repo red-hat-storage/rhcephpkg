@@ -85,3 +85,25 @@ class TestUtilChangelog(object):
         source.copy(tmpdir.mkdir('debian'))
         assert util.bump_changelog(['some change']) is True
         assert str(util.get_deb_version()) == '10.2.0-5redhat1'
+
+
+class TestUtilGetUserFullname(object):
+
+    @pytest.fixture
+    def setup(self, monkeypatch):
+        class FakeGetpwuid(object):
+            pw_gecos = 'Mr Gecos'
+        monkeypatch.delenv('DEBFULLNAME', raising=False)
+        monkeypatch.delenv('NAME', raising=False)
+        monkeypatch.setattr('pwd.getpwuid', lambda uid: FakeGetpwuid())
+
+    def test_debfullname_env(self, setup, monkeypatch):
+        monkeypatch.setenv('DEBFULLNAME', 'Mr Deb Fullname')
+        assert util.get_user_fullname() == 'Mr Deb Fullname'
+
+    def test_name_env(self, setup, monkeypatch):
+        monkeypatch.setenv('NAME', 'Mr Plain Name')
+        assert util.get_user_fullname() == 'Mr Plain Name'
+
+    def test_gecos(self, setup, monkeypatch):
+        assert util.get_user_fullname() == 'Mr Gecos'
