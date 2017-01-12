@@ -24,6 +24,7 @@ Configuration
   user=kdreyer
   gitbaseurl = ssh://%(user)s@code.engineering.redhat.com/rcm/ceph-ubuntu/%(module)s
   anongiturl = git://git.app.eng.bos.redhat.com/rcm/ceph-ubuntu/%(module)s.git
+  patchesbaseurl = ssh://%(user)s@code.engineering.redhat.com/%(module)s
 
   [rhcephpkg.jenkins]
   token=5d41402abc4b2a76b9719d911017c592
