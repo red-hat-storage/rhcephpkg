@@ -29,5 +29,7 @@ class TestClone(object):
         tmpdir.mkdir('mypkg')
         monkeypatch.chdir(tmpdir)
         clone = Clone(())
-        with pytest.raises(SystemExit):
+        with pytest.raises(SystemExit) as e:
             clone._run('mypkg')
+        expected = 'mypkg already exists in current working directory.'
+        assert str(e.value) == expected

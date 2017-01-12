@@ -37,8 +37,8 @@ Positional Arguments:
     def _run(self, pkg):
         """ Clone a package from dist-git. """
         if os.path.exists(pkg):
-            raise SystemExit('%s already exists in current working directory.',
-                             pkg)
+            err = '%s already exists in current working directory.' % pkg
+            raise SystemExit(err)
         configp = util.config()
         try:
             user = configp.get('rhcephpkg', 'user')
