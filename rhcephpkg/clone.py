@@ -2,6 +2,7 @@ import os
 import subprocess
 from six.moves import configparser
 from tambo import Transport
+import rhcephpkg.log as log
 import rhcephpkg.util as util
 
 
@@ -50,3 +51,12 @@ Positional Arguments:
         pkg_url = gitbaseurl % {'user': user, 'module': pkg}
         cmd = ['git', 'clone', pkg_url]
         subprocess.check_call(cmd)
+
+        try:
+            patchesbaseurl = configp.get('rhcephpkg', 'patchesbaseurl')
+            patches_url = patchesbaseurl % {'user': user, 'module': pkg}
+            os.chdir(pkg)
+            cmd = ['git', 'remote', 'add', '-f', 'patches', patches_url]
+            subprocess.check_call(cmd)
+        except configparser.Error as err:
+            log.info('no patchesbaseurl configured, skipping patches remote')
