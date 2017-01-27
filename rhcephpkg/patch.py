@@ -2,7 +2,6 @@ import re
 import subprocess
 import tempfile
 from tambo import Transport
-import rhcephpkg.log as log
 import rhcephpkg.util as util
 
 BZ_REGEX = r'rhbz#(\d+)'
@@ -114,6 +113,6 @@ Generate patches from a patch-queue branch.
             from gbp.patch_series import PatchSeries
             return PatchSeries.read_series_file(file_)
         except ImportError:
-            log.warning('Please run "sudo apt-get install '
-                        'git-buildpackage" to write the patches to '
-                        './debian/changelog')
+            raise SystemExit(
+                'Please run "sudo apt-get install git-buildpackage" to write '
+                'the patches to ./debian/changelog')
