@@ -42,6 +42,31 @@ class TestMergePatches(object):
         expected = ['git', 'pull', '--ff-only', 'patches/ceph-2-rhel-patches']
         assert self.last_cmd == expected
 
+    def test_force_on_debian_branch(self, monkeypatch):
+        monkeypatch.setenv('HOME', FIXTURES_DIR)
+        monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
+        # set current_branch() to a debian branch:
+        monkeypatch.setattr('rhcephpkg.util.current_branch',
+                            lambda: 'ceph-2-ubuntu')
+        localbuild = MergePatches(())
+        localbuild._run(force=True)
+        # Verify that we run the "git push" command here.
+        expected = ['git', 'push', '.',
+                    '+patch-queue/ceph-2-ubuntu:patches/ceph-2-rhel-patches']
+        assert self.last_cmd == expected
+
+    def test_force_on_patch_queue_branch(self, monkeypatch):
+        monkeypatch.setenv('HOME', FIXTURES_DIR)
+        monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
+        # set current_branch() to a patch-queue branch:
+        monkeypatch.setattr('rhcephpkg.util.current_branch',
+                            lambda: 'patch-queue/ceph-2-ubuntu')
+        localbuild = MergePatches(())
+        localbuild._run(force=True)
+        # Verify that we run the "git reset" command here.
+        expected = ['git', 'reset', '--hard', 'patches/ceph-2-rhel-patches']
+        assert self.last_cmd == expected
+
 
 class TestMergePatchesRhelPatchesBranch(object):
 

@@ -14,23 +14,30 @@ that into our local patch-queue branch, so that both branches align.
 This command helps to align the patch series between our RHEL packages and our
 Ubuntu packages.
 
+Options:
+--force    Do a hard reset, rather than restricting to fast-forward merges
+           only. Use this option if the RHEL patches branch was amended or
+           rebased for some reason.
 """
     name = 'merge-patches'
 
     def __init__(self, argv):
         self.argv = argv
-        self.options = []
+        self.options = ['--force', '--hard-reset']
 
     def main(self):
         self.parser = Transport(self.argv, options=self.options)
         self.parser.catch_help = self.help()
         self.parser.parse_args()
-        self._run()
+        force = False
+        if self.parser.has(['--force', '--hard-reset']):
+            force = True
+        self._run(force)
 
     def help(self):
         return self._help
 
-    def _run(self):
+    def _run(self, force=False):
         # Determine the names of the relevant branches
         current_branch = util.current_branch()
         debian_branch = util.current_debian_branch()
@@ -43,6 +50,10 @@ Ubuntu packages.
             # For example: "git pull --ff-only patches/ceph-2-rhel-patches"
             cmd = ['git', 'pull', '--ff-only',
                    'patches/' + rhel_patches_branch]
+            if force:
+                # Do a hard reset on HEAD instead.
+                cmd = ['git', 'reset', '--hard',
+                       'patches/' + rhel_patches_branch]
         else:
             # HEAD is our debian branch. Use "git fetch" to update the
             # patch-queue ref. For example:
@@ -50,6 +61,10 @@ Ubuntu packages.
             #  patches/ceph-2-rhel-patches:patch-queue/ceph-2-ubuntu"
             cmd = ['git', 'fetch', '.',
                    'patches/%s:%s' % (rhel_patches_branch, patches_branch)]
+            if force:
+                # Do a hard push (with "+") instead.
+                cmd = ['git', 'push', '.', '+%s:patches/%s' %
+                       (patches_branch, rhel_patches_branch)]
         log.info(' '.join(cmd))
         subprocess.check_call(cmd)
 
