@@ -60,3 +60,5 @@ Positional Arguments:
             subprocess.check_call(cmd)
         except configparser.Error as err:
             log.info('no patchesbaseurl configured, skipping patches remote')
+
+        util.setup_pristine_tar_branch()

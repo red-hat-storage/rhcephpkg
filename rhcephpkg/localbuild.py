@@ -53,6 +53,9 @@ Options:
                    '--distribution', distro]
             log.info('initializing pbuilder cache %s', pbuilder_cache)
             subprocess.check_call(cmd)
+
+        util.setup_pristine_tar_branch()
+
         # TODO: we should also probably check parent dir for leftovers and warn
         # the user to delete them (or delete them ourselves?)
         cmd = ['gbp', 'buildpackage', '--git-dist=%s' % distro,

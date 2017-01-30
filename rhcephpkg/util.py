@@ -64,6 +64,18 @@ def package_name():
     return os.path.basename(os.getcwd())
 
 
+def setup_pristine_tar_branch():
+    """ Ensure .git/refs/heads/pristine-tar is set up. """
+    if not os.path.exists('.git/refs/remotes/origin/pristine-tar'):
+        # If there is no "origin/pristine-tar" branch, this package doesn't use
+        # pristine-tar, and we don't care.
+        return
+    if not os.path.exists('.git/refs/heads/pristine-tar'):
+        cmd = ['git', 'branch', '--track', 'pristine-tar',
+               'origin/pristine-tar']
+        subprocess.call(cmd)
+
+
 def get_user_fullname():
     """ Get a user's full name, if available. """
     # TODO: use $(git config --get user.name) instead

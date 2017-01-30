@@ -107,3 +107,42 @@ class TestUtilGetUserFullname(object):
 
     def test_gecos(self, setup, monkeypatch):
         assert util.get_user_fullname() == 'Mr Gecos'
+
+
+class TestUtilSetupPristineTarBranch(object):
+
+    def setup_method(self, method):
+        """ Reset last_cmd before each test. """
+        self.last_cmd = None
+
+    def fake_call(self, cmd):
+        """ Store cmd, in order to verify it later. """
+        self.last_cmd = cmd
+        return 0
+
+    def test_no_remote_branch(self, tmpdir, monkeypatch):
+        pkgdir = tmpdir.mkdir('mypkg')
+        remotesdir = pkgdir.mkdir('.git').mkdir('refs').mkdir('remotes')
+        remotesdir.mkdir('origin')
+        util.setup_pristine_tar_branch()
+        assert not os.path.exists('.git/refs/heads/pristine-tar')
+
+    def test_remote_branch_present(self, tmpdir, monkeypatch):
+        pkgdir = tmpdir.mkdir('mypkg')
+        monkeypatch.chdir(pkgdir)
+        remotesdir = pkgdir.mkdir('.git').mkdir('refs').mkdir('remotes')
+        remotesdir.mkdir('origin').ensure('pristine-tar', file=True)
+        monkeypatch.setattr('subprocess.call', self.fake_call)
+        util.setup_pristine_tar_branch()
+        assert self.last_cmd == ['git', 'branch', '--track', 'pristine-tar',
+                                 'origin/pristine-tar']
+
+    def test_remote_and_local_branches_present(self, tmpdir, monkeypatch):
+        pkgdir = tmpdir.mkdir('mypkg')
+        monkeypatch.chdir(pkgdir)
+        refsdir = pkgdir.mkdir('.git').mkdir('refs')
+        refsdir.mkdir('remotes').mkdir('origin').ensure('pristine-tar',
+                                                        file=True)
+        refsdir.mkdir('heads').ensure('pristine-tar', file=True)
+        util.setup_pristine_tar_branch()
+        assert self.last_cmd is None

@@ -1,6 +1,7 @@
 import subprocess
 from tambo import Transport
 import rhcephpkg.log as log
+import rhcephpkg.util as util
 
 
 class Source(object):
@@ -24,6 +25,7 @@ Build a source package on the local system.
 
     def _run(self):
         """ Build a source package on the local system. """
+        util.setup_pristine_tar_branch()
         cmd = ['gbp', 'buildpackage', '--git-tag', '--git-retag', '-S',
                '-us', '-uc']
         log.info(' '.join(cmd))
