@@ -52,7 +52,7 @@ class TestMergePatches(object):
         localbuild._run(force=True)
         # Verify that we run the "git push" command here.
         expected = ['git', 'push', '.',
-                    '+patch-queue/ceph-2-ubuntu:patches/ceph-2-rhel-patches']
+                    '+patches/ceph-2-rhel-patches:patch-queue/ceph-2-ubuntu']
         assert self.last_cmd == expected
 
     def test_force_on_patch_queue_branch(self, monkeypatch):

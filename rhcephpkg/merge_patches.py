@@ -63,8 +63,8 @@ Options:
                    'patches/%s:%s' % (rhel_patches_branch, patches_branch)]
             if force:
                 # Do a hard push (with "+") instead.
-                cmd = ['git', 'push', '.', '+%s:patches/%s' %
-                       (patches_branch, rhel_patches_branch)]
+                cmd = ['git', 'push', '.', '+patches/%s:%s' %
+                       (rhel_patches_branch, patches_branch)]
         log.info(' '.join(cmd))
         subprocess.check_call(cmd)
 
