@@ -11,4 +11,4 @@ from .source import Source
 __all__ = ['log', 'Build', 'Clone', 'Download', 'Hello', 'Localbuild',
            'MergePatches', 'Patch', 'Source']
 
-__version__ = '1.1.13'
+__version__ = '1.1.14'
