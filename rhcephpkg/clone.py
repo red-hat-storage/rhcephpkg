@@ -56,6 +56,8 @@ Positional Arguments:
         cmd = ['git', 'clone', pkg_url]
         subprocess.check_call(cmd)
 
+        os.chdir(pkg)
+
         try:
             patchesbaseurl = configp.get('rhcephpkg', 'patchesbaseurl')
         except configparser.Error as err:
@@ -65,7 +67,6 @@ Positional Arguments:
             cmd = ['git', 'ls-remote', '--exit-code', patches_url]
             result = subprocess.call(cmd, stdout=DEVNULL, stderr=DEVNULL)
             if result == 0:
-                os.chdir(pkg)
                 cmd = ['git', 'remote', 'add', '-f', 'patches', patches_url]
                 subprocess.check_call(cmd)
 
