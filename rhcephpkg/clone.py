@@ -4,6 +4,10 @@ from six.moves import configparser
 from tambo import Transport
 import rhcephpkg.log as log
 import rhcephpkg.util as util
+try:
+    from subprocess import DEVNULL  # py3
+except ImportError:
+    DEVNULL = open(os.devnull, 'wb')
 
 
 class Clone(object):
@@ -54,11 +58,15 @@ Positional Arguments:
 
         try:
             patchesbaseurl = configp.get('rhcephpkg', 'patchesbaseurl')
-            patches_url = patchesbaseurl % {'user': user, 'module': pkg}
-            os.chdir(pkg)
-            cmd = ['git', 'remote', 'add', '-f', 'patches', patches_url]
-            subprocess.check_call(cmd)
         except configparser.Error as err:
             log.info('no patchesbaseurl configured, skipping patches remote')
+        else:
+            patches_url = patchesbaseurl % {'user': user, 'module': pkg}
+            cmd = ['git', 'ls-remote', '--exit-code', patches_url]
+            result = subprocess.call(cmd, stdout=DEVNULL, stderr=DEVNULL)
+            if result == 0:
+                os.chdir(pkg)
+                cmd = ['git', 'remote', 'add', '-f', 'patches', patches_url]
+                subprocess.check_call(cmd)
 
         util.setup_pristine_tar_branch()
