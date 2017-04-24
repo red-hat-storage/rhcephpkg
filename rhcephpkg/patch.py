@@ -81,6 +81,9 @@ Generate patches from a patch-queue branch.
             if bzstr != '':
                 change += ' (%s)' % bzstr
             changelog.append(change)
+        if len(changelog) == 0:
+            print('No new patches, quitting.')
+            raise SystemExit(1)
         util.bump_changelog(changelog)
 
         # Assemble a standard commit message string "clog".
