@@ -1,0 +1,17 @@
+{
+  "source": [
+    "ceph_10.2.0-2redhat1trusty.debian.tar.gz",
+    "ceph_10.2.0-2redhat1trusty.dsc",
+    "ceph_10.2.0-2redhat1trusty_amd64.changes",
+    "ceph_10.2.0.orig.tar.gz"
+  ],
+  "amd64": [
+    "libcephfs1-dbg_10.2.0-2redhat1trusty_amd64.deb",
+    "librbd-dbg_10.2.0-2redhat1trusty_amd64.deb",
+    "ceph_10.2.0-2redhat1trusty_amd64.deb",
+    "radosgw_10.2.0-2redhat1trusty_amd64.deb"
+  ],
+  "noarch": [
+    "libcephfs-java_10.2.0-2redhat1trusty_all.deb"
+  ]
+}
