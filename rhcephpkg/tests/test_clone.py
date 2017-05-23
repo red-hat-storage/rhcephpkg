@@ -2,9 +2,6 @@ import os
 import pytest
 from rhcephpkg import Clone
 
-TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
-FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
-
 
 class TestClone(object):
 
@@ -28,7 +25,6 @@ class TestClone(object):
         return 0
 
     def test_basic_clone(self, tmpdir, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
         monkeypatch.chdir(tmpdir)
         clone = Clone(())

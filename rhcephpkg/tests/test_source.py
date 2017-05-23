@@ -1,8 +1,4 @@
-import os
 from rhcephpkg import Source
-
-TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
-FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
 
 
 class TestSource(object):
@@ -17,7 +13,6 @@ class TestSource(object):
         return 0
 
     def test_source(self, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
         localbuild = Source(())
         localbuild._run()

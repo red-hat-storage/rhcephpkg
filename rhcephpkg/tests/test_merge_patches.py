@@ -1,9 +1,5 @@
-import os
 import pytest
 from rhcephpkg import MergePatches
-
-TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
-FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
 
 
 class TestMergePatches(object):
@@ -18,7 +14,6 @@ class TestMergePatches(object):
         return 0
 
     def test_merge_patch_on_debian_branch(self, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
         # set current_branch() to a debian branch:
         monkeypatch.setattr('rhcephpkg.util.current_branch',
@@ -31,7 +26,6 @@ class TestMergePatches(object):
         assert self.last_cmd == expected
 
     def test_merge_patch_on_patch_queue_branch(self, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
         # set current_branch() to a patch-queue branch:
         monkeypatch.setattr('rhcephpkg.util.current_branch',
@@ -43,7 +37,6 @@ class TestMergePatches(object):
         assert self.last_cmd == expected
 
     def test_force_on_debian_branch(self, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
         # set current_branch() to a debian branch:
         monkeypatch.setattr('rhcephpkg.util.current_branch',
@@ -56,7 +49,6 @@ class TestMergePatches(object):
         assert self.last_cmd == expected
 
     def test_force_on_patch_queue_branch(self, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
         # set current_branch() to a patch-queue branch:
         monkeypatch.setattr('rhcephpkg.util.current_branch',

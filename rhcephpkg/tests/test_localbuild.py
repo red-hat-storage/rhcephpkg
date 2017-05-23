@@ -1,9 +1,5 @@
-import os
 import pytest
 from rhcephpkg import Localbuild
-
-TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
-FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
 
 
 class TestLocalbuild(object):
@@ -23,7 +19,6 @@ class TestLocalbuild(object):
         (('localbuild', '--dist', 'xenial'), '--git-dist=xenial'),
     ])
     def test_localbuild(self, args, expected, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
         monkeypatch.setattr('rhcephpkg.Localbuild._get_j_arg',
                             lambda *a: '-j2')
@@ -34,7 +29,6 @@ class TestLocalbuild(object):
                                  '--git-pbuilder', '-j2', '-us', '-uc']
 
     def test_missing_arg(self, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         localbuild = Localbuild(('localbuild', '--dist'))
         with pytest.raises(SystemExit) as e:
             localbuild.main()
@@ -57,7 +51,6 @@ class TestGetJArg(object):
         (8, 32, '-j8'),
     ])
     def test_get_j_arg(self, cpus, ram, expected, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         localbuild = Localbuild(())
         result = localbuild._get_j_arg(cpus=cpus, total_ram_gb=ram)
         assert result == expected

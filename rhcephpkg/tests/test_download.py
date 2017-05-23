@@ -2,14 +2,10 @@ import os
 from rhcephpkg import Download
 from rhcephpkg.tests.util import fake_urlopen
 
-TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
-FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
-
 
 class TestDownload(object):
 
     def test_basic_download(self, monkeypatch, tmpdir):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         monkeypatch.setattr('rhcephpkg.download.urlopen', fake_urlopen)
         monkeypatch.chdir(tmpdir)
         download = Download(())

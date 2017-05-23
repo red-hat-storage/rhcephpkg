@@ -1,16 +1,10 @@
-import os
 from rhcephpkg import Hello
 from rhcephpkg.tests.util import fake_urlopen
-
-
-TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
-FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
 
 
 class TestHelloJenkins(object):
 
     def test_success(self, monkeypatch, capsys):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         # python-jenkins uses a "from" import, "from X import Y", so
         # monkeypatching is trickier.
         monkeypatch.setattr('jenkins.urlopen', fake_urlopen)

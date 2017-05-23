@@ -46,7 +46,6 @@ class TestUtilConfig(object):
             c.get('some.section', 'someoption')
 
     def test_working_config_file(self, monkeypatch):
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         c = util.config()
         assert c.get('rhcephpkg', 'user') == 'kdreyer'
         assert c.get('rhcephpkg', 'gitbaseurl') == \
@@ -77,7 +76,6 @@ class TestUtilChangelog(object):
 
     def test_bump_changelog(self, tmpdir, monkeypatch):
         """ test bumping a debian changelog """
-        monkeypatch.setenv('HOME', FIXTURES_DIR)
         monkeypatch.chdir(tmpdir)
         # Our /debian/changelog fixture:
         source = py.path.local(FIXTURES_DIR).join('changelog')
