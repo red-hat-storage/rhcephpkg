@@ -137,7 +137,6 @@ setup(
     tests_require=[
         'pytest',
         'pytest-flake8',
-        'httpretty',
     ],
     cmdclass={'test': PyTest, 'bump': BumpCommand, 'release': ReleaseCommand},
 )
