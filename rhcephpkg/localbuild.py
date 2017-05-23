@@ -35,6 +35,11 @@ Options:
                 raise SystemExit('Specify a distro to --dist')
             distro = self.parser.get('--dist')
 
+        if self.parser.unknown_commands:
+            log.error('unknown option %s',
+                      ' '.join(self.parser.unknown_commands))
+            return self.parser.print_help()
+
         self._run(distro)
 
     def help(self):
