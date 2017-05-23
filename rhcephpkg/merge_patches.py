@@ -32,6 +32,10 @@ Options:
         force = False
         if self.parser.has(['--force', '--hard-reset']):
             force = True
+        if self.parser.unknown_commands:
+            log.error('unknown option %s',
+                      ' '.join(self.parser.unknown_commands))
+            return self.parser.print_help()
         self._run(force)
 
     def help(self):
