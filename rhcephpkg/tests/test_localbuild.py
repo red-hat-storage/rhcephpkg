@@ -1,4 +1,5 @@
 import os
+import re
 import pytest
 from rhcephpkg import Localbuild
 from rhcephpkg.localbuild import setup_pbuilder_cache
@@ -56,6 +57,14 @@ class TestGetJArg(object):
         localbuild = Localbuild(())
         result = localbuild._get_j_arg(cpus=cpus, total_ram_gb=ram)
         assert result == expected
+
+    def test_get_j_arg_live(self):
+        localbuild = Localbuild([])
+        # Rather than calculating the amount of RAM on this system and
+        # basically re-implementing the entire code here to get the exact
+        # expected result, just pattern-match for basic sanity.
+        result = localbuild._get_j_arg(cpus=1)
+        assert re.match('-j\d+$', result)
 
 
 class TestSetupPbuilderCache(object):
