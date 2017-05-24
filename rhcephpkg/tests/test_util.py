@@ -45,7 +45,7 @@ class TestUtilConfig(object):
         with pytest.raises(Exception):
             c.get('some.section', 'someoption')
 
-    def test_working_config_file(self, monkeypatch):
+    def test_working_config_file(self):
         c = util.config()
         assert c.get('rhcephpkg', 'user') == 'kdreyer'
         assert c.get('rhcephpkg', 'gitbaseurl') == \
@@ -68,7 +68,7 @@ class TestUtilPackageName(object):
 
 class TestUtilChangelog(object):
 
-    def test_format_changelog(self, tmpdir, monkeypatch):
+    def test_format_changelog(self, tmpdir):
         """ test bumping a debian changelog """
         changes = ['a change', 'some other change', 'third change']
         expected = "  * a change\n  * some other change\n  * third change\n"
@@ -103,7 +103,7 @@ class TestUtilGetUserFullname(object):
         monkeypatch.setenv('NAME', 'Mr Plain Name')
         assert util.get_user_fullname() == 'Mr Plain Name'
 
-    def test_gecos(self, setup, monkeypatch):
+    def test_gecos(self, setup):
         assert util.get_user_fullname() == 'Mr Gecos'
 
 
@@ -118,7 +118,7 @@ class TestUtilSetupPristineTarBranch(object):
         self.last_cmd = cmd
         return 0
 
-    def test_no_remote_branch(self, tmpdir, monkeypatch):
+    def test_no_remote_branch(self, tmpdir):
         pkgdir = tmpdir.mkdir('mypkg')
         remotesdir = pkgdir.mkdir('.git').mkdir('refs').mkdir('remotes')
         remotesdir.mkdir('origin')

@@ -30,7 +30,7 @@ class TestLocalbuild(object):
                                  '--git-arch=amd64', '--git-verbose',
                                  '--git-pbuilder', '-j2', '-us', '-uc']
 
-    def test_missing_arg(self, monkeypatch):
+    def test_missing_arg(self):
         localbuild = Localbuild(('localbuild', '--dist'))
         with pytest.raises(SystemExit) as e:
             localbuild.main()
@@ -52,7 +52,7 @@ class TestGetJArg(object):
         (8, 16, '-j4'),
         (8, 32, '-j8'),
     ])
-    def test_get_j_arg(self, cpus, ram, expected, monkeypatch):
+    def test_get_j_arg(self, cpus, ram, expected):
         localbuild = Localbuild(())
         result = localbuild._get_j_arg(cpus=cpus, total_ram_gb=ram)
         assert result == expected
