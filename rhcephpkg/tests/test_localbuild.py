@@ -14,9 +14,9 @@ class TestLocalbuild(object):
         return 0
 
     @pytest.mark.parametrize('args,expected', [
-        (('localbuild'), '--git-dist=trusty'),
-        (('localbuild', '--dist', 'trusty'), '--git-dist=trusty'),
-        (('localbuild', '--dist', 'xenial'), '--git-dist=xenial'),
+        (['localbuild'], '--git-dist=trusty'),
+        (['localbuild', '--dist', 'trusty'], '--git-dist=trusty'),
+        (['localbuild', '--dist', 'xenial'], '--git-dist=xenial'),
     ])
     def test_localbuild(self, args, expected, monkeypatch):
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
