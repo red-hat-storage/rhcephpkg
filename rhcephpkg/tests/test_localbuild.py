@@ -1,3 +1,4 @@
+import os
 import pytest
 from rhcephpkg import Localbuild
 from rhcephpkg.localbuild import setup_pbuilder_cache
@@ -63,9 +64,18 @@ class TestSetupPbuilderCache(object):
         """ Reset cmds before each test. """
         self.cmds = []
 
+    def fake_sudo_rm(self, cmd):
+        """ Fake "sudo rm <foo>" command. """
+        for filename in cmd[2:]:
+            if os.path.exists(filename):
+                os.remove(filename)
+
     def fake_check_call(self, cmd):
         """ Store cmd, in order to verify it later. """
         self.cmds.append(cmd)
+        # and fake "sudo rm"...
+        if cmd[0] == 'sudo' and cmd[1] == 'rm':
+            self.fake_sudo_rm(cmd)
         return 0
 
     @pytest.fixture(autouse=True)
@@ -92,3 +102,13 @@ class TestSetupPbuilderCache(object):
                     '--variant=buildd', '--basetgz', pbuilder_cache,
                     '--distribution', 'trusty']
         assert self.cmds == [expected]
+
+    def test_zero_length(self, tmpcache):
+        tmpcache.write('')
+        pbuilder_cache = str(tmpcache)
+        setup_pbuilder_cache(pbuilder_cache, 'trusty')
+        rm = ['sudo', 'rm', pbuilder_cache]
+        create = ['sudo', 'pbuilder', 'create', '--debootstrapopts',
+                  '--variant=buildd', '--basetgz', pbuilder_cache,
+                  '--distribution', 'trusty']
+        assert self.cmds == [rm, create]

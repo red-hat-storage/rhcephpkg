@@ -8,6 +8,12 @@ import rhcephpkg.util as util
 
 
 def setup_pbuilder_cache(pbuilder_cache, distro):
+    # Delete existing cache file if it is bogus (zero-length).
+    if os.path.isfile(pbuilder_cache):
+        if os.stat(pbuilder_cache).st_size == 0:
+            log.info('deleting 0 length %s', pbuilder_cache)
+            cmd = ['sudo', 'rm', pbuilder_cache]
+            subprocess.check_call(cmd)
     # Set up the cache if it does not exist.
     if not os.path.isfile(pbuilder_cache):
         log.info('initializing pbuilder cache %s', pbuilder_cache)
