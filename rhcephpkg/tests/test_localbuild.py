@@ -1,5 +1,6 @@
 import pytest
 from rhcephpkg import Localbuild
+from rhcephpkg.localbuild import setup_pbuilder_cache
 
 
 class TestLocalbuild(object):
@@ -54,3 +55,40 @@ class TestGetJArg(object):
         localbuild = Localbuild(())
         result = localbuild._get_j_arg(cpus=cpus, total_ram_gb=ram)
         assert result == expected
+
+
+class TestSetupPbuilderCache(object):
+
+    def setup_method(self, method):
+        """ Reset cmds before each test. """
+        self.cmds = []
+
+    def fake_check_call(self, cmd):
+        """ Store cmd, in order to verify it later. """
+        self.cmds.append(cmd)
+        return 0
+
+    @pytest.fixture(autouse=True)
+    def patch_subprocess(self, monkeypatch):
+        """ Monkeypatch subprocess for each test. """
+        monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
+
+    @pytest.fixture
+    def tmpcache(self, tmpdir):
+        """ Fake pbuilder cache file in a tmpdir. """
+        cache = tmpdir.join('base-trusty-amd64.tgz')
+        cache.write('testcachedata')
+        return cache
+
+    def test_exists(self, tmpcache):
+        pbuilder_cache = str(tmpcache)
+        setup_pbuilder_cache(pbuilder_cache, 'trusty')
+        assert self.cmds == []
+
+    def test_no_exist(self):
+        pbuilder_cache = '/noexist/base-trusty-amd64.tgz'
+        setup_pbuilder_cache(pbuilder_cache, 'trusty')
+        expected = ['sudo', 'pbuilder', 'create', '--debootstrapopts',
+                    '--variant=buildd', '--basetgz', pbuilder_cache,
+                    '--distribution', 'trusty']
+        assert self.cmds == [expected]

@@ -7,6 +7,16 @@ import rhcephpkg.log as log
 import rhcephpkg.util as util
 
 
+def setup_pbuilder_cache(pbuilder_cache, distro):
+    # Set up the cache if it does not exist.
+    if not os.path.isfile(pbuilder_cache):
+        log.info('initializing pbuilder cache %s', pbuilder_cache)
+        cmd = ['sudo', 'pbuilder', 'create', '--debootstrapopts',
+               '--variant=buildd', '--basetgz', pbuilder_cache,
+               '--distribution', distro]
+        subprocess.check_call(cmd)
+
+
 class Localbuild(object):
     help_menu = 'build a package on the local system'
     _help = """
@@ -52,12 +62,8 @@ Options:
         os.environ['BUILDER'] = 'pbuilder'
         j_arg = self._get_j_arg(cpu_count())
         pbuilder_cache = '/var/cache/pbuilder/base-%s-amd64.tgz' % distro
-        if not os.path.isfile(pbuilder_cache):
-            cmd = ['sudo', 'pbuilder', 'create', '--debootstrapopts',
-                   '--variant=buildd', '--basetgz', pbuilder_cache,
-                   '--distribution', distro]
-            log.info('initializing pbuilder cache %s', pbuilder_cache)
-            subprocess.check_call(cmd)
+
+        setup_pbuilder_cache(pbuilder_cache, distro)
 
         util.setup_pristine_tar_branch()
 
