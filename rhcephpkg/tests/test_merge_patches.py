@@ -68,6 +68,8 @@ class TestMergePatchesRhelPatchesBranch(object):
         ('ceph-2-trusty', 'ceph-2-rhel-patches'),
         ('ceph-2-xenial', 'ceph-2-rhel-patches'),
         ('someotherproduct-2-ubuntu', 'someotherproduct-2-rhel-patches'),
+        ('ceph-2-ubuntu-hotfix-bz123', 'ceph-2-rhel-patches-hotfix-bz123'),
+        ('ceph-2-ubuntu-test-bz456', 'ceph-2-rhel-patches-test-bz456'),
     ])
     def test_get_rhel_patches_branch(self, debian_branch, expected):
         m = MergePatches(())

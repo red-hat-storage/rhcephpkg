@@ -1,4 +1,3 @@
-import re
 import subprocess
 from tambo import Transport
 import rhcephpkg.util as util
@@ -81,7 +80,13 @@ Options:
         ceph-2-trusty -> ceph-2-rhel-patches
         ceph-2-xenial -> ceph-2-rhel-patches
         ceph-1.3-ubuntu -> ceph-1.3-rhel-patches
+        ceph-2-ubuntu-hotfix-bz123 -> ceph-2-rhel-patches-hotfix-bz123
         """
-        deb_regex = r'^(\w+)-([\d\.]+)-.*'
-        rhel_regex = r'\1-\2-rhel-patches'
-        return re.sub(deb_regex, rhel_regex, debian_branch)
+        (product, version, distro) = debian_branch.split('-', 2)
+        suffix = None
+        if '-' in distro:
+            (distro, suffix) = distro.split('-', 1)
+        rhel = '%s-%s-rhel-patches' % (product, version)
+        if suffix is not None:
+            rhel = '%s-%s' % (rhel, suffix)
+        return rhel
