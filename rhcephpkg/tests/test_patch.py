@@ -67,6 +67,33 @@ testpkg (1.0.0-3redhat1) stable; urgency=medium
         p._run()
         assert expected in rules_file.read()
 
+    def test_no_changes(self, testpkg, capsys):
+        """ Verify that we bail when no patches have changed. """
+        pytest.importorskip('gbp')
+        p = Patch([])
+        p._run()
+        with pytest.raises(SystemExit):
+            p._run()
+        out, _ = capsys.readouterr()
+        assert 'No new patches, quitting.' in out
+
+    def test_amended_patch(self, testpkg, capsys):
+        pytest.importorskip('gbp')
+        p = Patch([])
+        p._run()
+        git('checkout', 'patch-queue/ceph-2-ubuntu')
+        testpkg.join('foobar.py').write('#!/usr/bin/python')
+        git('commit', 'foobar.py', '--amend', '--reset-author', '--no-edit')
+        p._run()
+        changelog_file = testpkg.join('debian').join('changelog')
+        expected = """
+testpkg (1.0.0-4redhat1) stable; urgency=medium
+
+  * M  debian/patches/0001-add-foobar-script.patch
+
+""".lstrip("\n")
+        assert changelog_file.read().startswith(expected)
+
 
 class FakePatch(object):
     pass

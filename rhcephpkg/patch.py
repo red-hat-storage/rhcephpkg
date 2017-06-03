@@ -59,6 +59,12 @@ Generate patches from a patch-queue branch.
         cmd = ['gbp', 'pq', 'export']
         subprocess.check_call(cmd)
 
+        # Bail early if gbp pq did nothing.
+        cmd = ['git', 'status', '-s', 'debian/patches/']
+        if subprocess.check_output(cmd) == '':
+            print('No new patches, quitting.')
+            raise SystemExit(1)
+
         # Add all patch files to Git's index
         cmd = ['git', 'add', '--all', 'debian/patches']
         subprocess.check_call(cmd)
@@ -86,8 +92,10 @@ Generate patches from a patch-queue branch.
                 change += ' (%s)' % bzstr
             changelog.append(change)
         if len(changelog) == 0:
-            print('No new patches, quitting.')
-            raise SystemExit(1)
+            # Maybe we rewrote some patch files? Write the raw git-status
+            # output to the changelog so we have *something* to work with.
+            cmd = ['git', 'status', '-s', 'debian/patches/']
+            changelog = subprocess.check_output(cmd).splitlines()
         util.bump_changelog(changelog)
 
         # Assemble a standard commit message string "clog".
