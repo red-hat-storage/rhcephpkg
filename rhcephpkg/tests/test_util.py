@@ -1,6 +1,5 @@
 import os
 import pytest
-import py.path
 from rhcephpkg import util
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -9,31 +8,14 @@ FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
 
 class TestUtilCurrentBranch(object):
 
-    def setup_method(self, method):
-        """ Reset last_cmd before each test. """
-        self.last_cmd = None
+    def test_current_branch(self, testpkg, monkeypatch):
+        assert util.current_branch() == 'ceph-2-ubuntu'
 
-    def fake_check_output(self, cmd):
-        """ Store cmd, in order to verify it later. """
-        self.last_cmd = cmd
-        return "fake-branch\n"
-
-    def test_current_branch(self, monkeypatch):
-        monkeypatch.setattr('subprocess.check_output', self.fake_check_output)
-        branch = util.current_branch()
-        assert self.last_cmd == ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
-        assert branch == 'fake-branch'
-
-    @pytest.mark.parametrize('current_branch', [
-        'ceph-2-ubuntu',
-        'patch-queue/ceph-2-ubuntu',
-    ])
-    def test_current_patches_and_debian_branches(self, monkeypatch,
-                                                 current_branch):
-        monkeypatch.setattr('rhcephpkg.util.current_branch',
-                            lambda: current_branch)
-        assert util.current_patches_branch() == 'patch-queue/ceph-2-ubuntu'
+    def test_current_debian_branch(self, testpkg, monkeypatch):
         assert util.current_debian_branch() == 'ceph-2-ubuntu'
+
+    def test_current_patches_branch(self, testpkg, monkeypatch):
+        assert util.current_patches_branch() == 'patch-queue/ceph-2-ubuntu'
 
 
 class TestUtilConfig(object):
@@ -60,10 +42,8 @@ class TestUtilConfig(object):
 
 class TestUtilPackageName(object):
 
-    def test_package_name(self, tmpdir, monkeypatch):
-        tmpdir.mkdir('mypkg')
-        monkeypatch.chdir(tmpdir.join('mypkg'))
-        assert util.package_name() == 'mypkg'
+    def test_package_name(self, testpkg, monkeypatch):
+        assert util.package_name() == 'testpkg'
 
 
 class TestUtilChangelog(object):
@@ -74,15 +54,10 @@ class TestUtilChangelog(object):
         expected = "  * a change\n  * some other change\n  * third change\n"
         assert util.format_changelog(changes) == expected
 
-    def test_bump_changelog(self, tmpdir, monkeypatch):
+    def test_bump_changelog(self, testpkg, monkeypatch):
         """ test bumping a debian changelog """
-        monkeypatch.chdir(tmpdir)
-        # Our /debian/changelog fixture:
-        source = py.path.local(FIXTURES_DIR).join('changelog')
-        # Copy this fixture file to our tmpdir.
-        source.copy(tmpdir.mkdir('debian'))
         assert util.bump_changelog(['some change']) is True
-        assert str(util.get_deb_version()) == '10.2.0-5redhat1'
+        assert str(util.get_deb_version()) == '1.0.0-3redhat1'
 
 
 class TestUtilGetUserFullname(object):
@@ -118,29 +93,22 @@ class TestUtilSetupPristineTarBranch(object):
         self.last_cmd = cmd
         return 0
 
-    def test_no_remote_branch(self, tmpdir):
-        pkgdir = tmpdir.mkdir('mypkg')
-        remotesdir = pkgdir.mkdir('.git').mkdir('refs').mkdir('remotes')
-        remotesdir.mkdir('origin')
+    def test_no_remote_branch(self, testpkg, monkeypatch):
         util.setup_pristine_tar_branch()
         assert not os.path.exists('.git/refs/heads/pristine-tar')
 
-    def test_remote_branch_present(self, tmpdir, monkeypatch):
-        pkgdir = tmpdir.mkdir('mypkg')
-        monkeypatch.chdir(pkgdir)
-        remotesdir = pkgdir.mkdir('.git').mkdir('refs').mkdir('remotes')
+    def test_remote_branch_present(self, testpkg, monkeypatch):
+        remotesdir = testpkg.join('.git').join('refs').mkdir('remotes')
         remotesdir.mkdir('origin').ensure('pristine-tar', file=True)
         monkeypatch.setattr('subprocess.call', self.fake_call)
         util.setup_pristine_tar_branch()
         assert self.last_cmd == ['git', 'branch', '--track', 'pristine-tar',
                                  'origin/pristine-tar']
 
-    def test_remote_and_local_branches_present(self, tmpdir, monkeypatch):
-        pkgdir = tmpdir.mkdir('mypkg')
-        monkeypatch.chdir(pkgdir)
-        refsdir = pkgdir.mkdir('.git').mkdir('refs')
+    def test_remote_and_local_branches_present(self, testpkg, monkeypatch):
+        refsdir = testpkg.join('.git').join('refs')
         refsdir.mkdir('remotes').mkdir('origin').ensure('pristine-tar',
                                                         file=True)
-        refsdir.mkdir('heads').ensure('pristine-tar', file=True)
+        refsdir.join('heads').ensure('pristine-tar', file=True)
         util.setup_pristine_tar_branch()
         assert self.last_cmd is None
