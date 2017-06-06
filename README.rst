@@ -72,7 +72,7 @@ Commands
 Installing
 ----------
 
-Pre-built Ubuntu Trusty packages are available::
+Pre-built Ubuntu Trusty and Xenial packages are available::
 
   sudo apt-add-repository ppa:kdreyer-redhat/rhceph
   sudo apt-get update
