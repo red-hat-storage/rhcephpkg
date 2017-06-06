@@ -27,7 +27,7 @@ class TestClone(object):
     def test_basic_clone(self, tmpdir, monkeypatch):
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
         monkeypatch.chdir(tmpdir)
-        clone = Clone(())
+        clone = Clone([])
         clone._run('mypkg')
         assert self.last_cmd == ['git', 'clone',
                                  'ssh://kdreyer@git.example.com/ubuntu/mypkg']
@@ -35,7 +35,7 @@ class TestClone(object):
     def test_already_exists(self, tmpdir, monkeypatch):
         tmpdir.mkdir('mypkg')
         monkeypatch.chdir(tmpdir)
-        clone = Clone(())
+        clone = Clone([])
         with pytest.raises(SystemExit) as e:
             clone._run('mypkg')
         expected = 'mypkg already exists in current working directory.'

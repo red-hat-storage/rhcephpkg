@@ -27,7 +27,7 @@ class TestHelloJenkins(object):
         # calls to urlopen(), not just jenkins' calls.
         # monkeypatch.setattr('six.moves.urllib.request.urlopen.func_code',
         #                     fake_urlopen.func_code)
-        hello = Hello(())
+        hello = Hello([])
         hello._run()
         out, _ = capsys.readouterr()
         assert out == "Hello Ken from Jenkins 1.5\n"

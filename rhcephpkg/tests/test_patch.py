@@ -8,7 +8,7 @@ class FakePatch(object):
 class TestPatch(object):
 
     def test_get_rhbzs(self, monkeypatch):
-        p = Patch(())
+        p = Patch([])
         fakepatch = FakePatch()
         fakepatch.subject = 'my git change'
         fakepatch.long_desc = 'my long description about this change'

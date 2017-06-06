@@ -54,7 +54,7 @@ class TestGetJArg(object):
         (8, 32, '-j8'),
     ])
     def test_get_j_arg(self, cpus, ram, expected):
-        localbuild = Localbuild(())
+        localbuild = Localbuild([])
         result = localbuild._get_j_arg(cpus=cpus, total_ram_gb=ram)
         assert result == expected
 

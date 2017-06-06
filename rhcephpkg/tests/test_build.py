@@ -25,7 +25,7 @@ class TestBuild(object):
         monkeypatch.setattr('rhcephpkg.util.package_name', lambda: 'mypkg')
         monkeypatch.setattr('rhcephpkg.util.current_branch',
                             lambda: 'ceph-2-ubuntu')
-        build = Build(())
+        build = Build([])
         build._run()
         assert self.args == ('build-package',)
         assert self.kwargs == {'parameters': {'BRANCH': 'ceph-2-ubuntu',

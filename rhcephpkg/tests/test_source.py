@@ -14,7 +14,7 @@ class TestSource(object):
 
     def test_source(self, monkeypatch):
         monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
-        localbuild = Source(())
+        localbuild = Source([])
         localbuild._run()
         assert self.last_cmd == ['gbp', 'buildpackage', '--git-tag',
                                  '--git-retag', '-S', '-us', '-uc']

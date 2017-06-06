@@ -18,7 +18,7 @@ class TestMergePatches(object):
         # set current_branch() to a debian branch:
         monkeypatch.setattr('rhcephpkg.util.current_branch',
                             lambda: 'ceph-2-ubuntu')
-        localbuild = MergePatches(())
+        localbuild = MergePatches([])
         localbuild._run()
         # Verify that we run the "git fetch" command here.
         expected = ['git', 'fetch', '.',
@@ -30,7 +30,7 @@ class TestMergePatches(object):
         # set current_branch() to a patch-queue branch:
         monkeypatch.setattr('rhcephpkg.util.current_branch',
                             lambda: 'patch-queue/ceph-2-ubuntu')
-        localbuild = MergePatches(())
+        localbuild = MergePatches([])
         localbuild._run()
         # Verify that we run the "git merge" command here.
         expected = ['git', 'pull', '--ff-only', 'patches/ceph-2-rhel-patches']
@@ -41,7 +41,7 @@ class TestMergePatches(object):
         # set current_branch() to a debian branch:
         monkeypatch.setattr('rhcephpkg.util.current_branch',
                             lambda: 'ceph-2-ubuntu')
-        localbuild = MergePatches(())
+        localbuild = MergePatches([])
         localbuild._run(force=True)
         # Verify that we run the "git push" command here.
         expected = ['git', 'push', '.',
@@ -53,7 +53,7 @@ class TestMergePatches(object):
         # set current_branch() to a patch-queue branch:
         monkeypatch.setattr('rhcephpkg.util.current_branch',
                             lambda: 'patch-queue/ceph-2-ubuntu')
-        localbuild = MergePatches(())
+        localbuild = MergePatches([])
         localbuild._run(force=True)
         # Verify that we run the "git reset" command here.
         expected = ['git', 'reset', '--hard', 'patches/ceph-2-rhel-patches']
@@ -72,5 +72,5 @@ class TestMergePatchesRhelPatchesBranch(object):
         ('ceph-2-ubuntu-test-bz456', 'ceph-2-rhel-patches-test-bz456'),
     ])
     def test_get_rhel_patches_branch(self, debian_branch, expected):
-        m = MergePatches(())
+        m = MergePatches([])
         assert m.get_rhel_patches_branch(debian_branch) == expected
