@@ -69,7 +69,7 @@ class TestUtilPackageName(object):
 class TestUtilChangelog(object):
 
     def test_format_changelog(self):
-        """ test bumping a debian changelog """
+        """ test formatting a debian changelog """
         changes = ['a change', 'some other change', 'third change']
         expected = "  * a change\n  * some other change\n  * third change\n"
         assert util.format_changelog(changes) == expected
