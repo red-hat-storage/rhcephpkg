@@ -7,7 +7,7 @@ class FakePatch(object):
 
 class TestPatch(object):
 
-    def test_get_rhbzs(self, monkeypatch):
+    def test_get_rhbzs(self):
         p = Patch([])
         fakepatch = FakePatch()
         fakepatch.subject = 'my git change'
