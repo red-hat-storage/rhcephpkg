@@ -1,6 +1,7 @@
 import json
 import posixpath
 from jenkins import JenkinsException
+import six
 from six.moves.urllib.request import Request, urlopen
 from six.moves.urllib.error import HTTPError
 from six.moves.http_client import BadStatusLine
@@ -54,7 +55,10 @@ Test authentication to Jenkins and return your user's fullName attribute.
             version_url = jenkins.server
             try:
                 response = urlopen(Request(version_url))
-                jenkins_version = response.info().getheader('X-Jenkins')
+                if six.PY2:
+                    jenkins_version = response.info().getheader('X-Jenkins')
+                else:
+                    jenkins_version = response.getheader('X-Jenkins')
             except (HTTPError, BadStatusLine) as err:
                 raise SystemExit(err)
         print('Hello %s from Jenkins %s' % (name, jenkins_version))
