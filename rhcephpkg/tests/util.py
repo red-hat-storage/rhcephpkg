@@ -11,6 +11,17 @@ TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
 
 
+class CallRecorder(object):
+    """ Simple recorder for monkeypatching. """
+    def __init__(self):
+        self.called = 0
+
+    def __call__(self, *a, **kw):
+        self.called += 1
+        self.a = a
+        self.kw = kw
+
+
 def fake_urlopen(req, **kw):
     """
     Behave like six.moves.urllib.request.urlopen().
