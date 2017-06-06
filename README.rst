@@ -61,7 +61,8 @@ Commands
 
 * ``rhcephpkg localbuild`` - Perform a local build using pbuilder.
 
-* ``rhcephpkg merge-patches`` - Do a merge from the RHEL rdopkg-style
+* ``rhcephpkg merge-patches`` - Do a merge from the RHEL `rdopkg
+  <https://github.com/softwarefactory-project/rdopkg>`_-style
   "patches" remote branch to the Ubuntu patch-queue branch.
 
 * ``rhcephpkg patch`` - Apply a patch-queue branch to a package.
