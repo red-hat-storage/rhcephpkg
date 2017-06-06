@@ -1,0 +1,10 @@
+Source: testpkg
+Maintainer: Ken Dreyer <kdreyer@redhat.com>
+Section: python
+Priority: optional
+Standards-Version: 3.9.5
+
+Package: testpkg
+Architecture: all
+Depends: ${misc:Depends}
+Description: Dummy package for testing

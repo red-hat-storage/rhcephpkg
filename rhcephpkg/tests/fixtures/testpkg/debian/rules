@@ -1,0 +1,3 @@
+#!/usr/bin/make -f
+
+export COMMIT=b994c58959cb7b4485fcf4e40ff77c69e61a12cf
