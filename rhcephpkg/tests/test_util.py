@@ -1,6 +1,7 @@
 import os
 import pytest
 from rhcephpkg import util
+from rhcephpkg.tests.util import CallRecorder
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
@@ -84,15 +85,6 @@ class TestUtilGetUserFullname(object):
 
 class TestUtilSetupPristineTarBranch(object):
 
-    def setup_method(self, method):
-        """ Reset last_cmd before each test. """
-        self.last_cmd = None
-
-    def fake_call(self, cmd):
-        """ Store cmd, in order to verify it later. """
-        self.last_cmd = cmd
-        return 0
-
     def test_no_remote_branch(self, testpkg, monkeypatch):
         util.setup_pristine_tar_branch()
         assert not os.path.exists('.git/refs/heads/pristine-tar')
@@ -100,15 +92,19 @@ class TestUtilSetupPristineTarBranch(object):
     def test_remote_branch_present(self, testpkg, monkeypatch):
         remotesdir = testpkg.join('.git').join('refs').mkdir('remotes')
         remotesdir.mkdir('origin').ensure('pristine-tar', file=True)
-        monkeypatch.setattr('subprocess.call', self.fake_call)
+        recorder = CallRecorder()
+        monkeypatch.setattr('subprocess.call', recorder)
         util.setup_pristine_tar_branch()
-        assert self.last_cmd == ['git', 'branch', '--track', 'pristine-tar',
-                                 'origin/pristine-tar']
+        expected = ['git', 'branch', '--track', 'pristine-tar',
+                    'origin/pristine-tar']
+        assert recorder.args == expected
 
     def test_remote_and_local_branches_present(self, testpkg, monkeypatch):
         refsdir = testpkg.join('.git').join('refs')
         refsdir.mkdir('remotes').mkdir('origin').ensure('pristine-tar',
                                                         file=True)
         refsdir.join('heads').ensure('pristine-tar', file=True)
+        recorder = CallRecorder()
+        monkeypatch.setattr('subprocess.call', recorder)
         util.setup_pristine_tar_branch()
-        assert self.last_cmd is None
+        assert recorder.called == 0
