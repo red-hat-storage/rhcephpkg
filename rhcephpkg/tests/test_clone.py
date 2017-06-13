@@ -33,6 +33,7 @@ class TestClone(object):
         clone._run('mypkg')
         assert recorder.args == ['git', 'clone',
                                  'ssh://kdreyer@git.example.com/ubuntu/mypkg']
+        assert tmpdir.join('mypkg').check(dir=1)
 
     def test_already_exists(self, tmpdir, monkeypatch):
         tmpdir.mkdir('mypkg')
