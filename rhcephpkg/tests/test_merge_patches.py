@@ -1,63 +1,62 @@
 import pytest
+import subprocess
 from rhcephpkg import MergePatches
+from rhcephpkg.tests.util import CallRecorder
+
+
+def git(*args):
+    """ shortcut for shelling out to git """
+    cmd = ['git'] + list(args)
+    subprocess.check_call(cmd)
 
 
 class TestMergePatches(object):
 
-    def setup_method(self, method):
-        """ Reset last_cmd before each test. """
-        self.last_cmd = None
-
-    def fake_check_call(self, cmd):
-        """ Store cmd, in order to verify it later. """
-        self.last_cmd = cmd
-        return 0
-
-    def test_merge_patch_on_debian_branch(self, monkeypatch):
-        monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
-        # set current_branch() to a debian branch:
-        monkeypatch.setattr('rhcephpkg.util.current_branch',
-                            lambda: 'ceph-2-ubuntu')
+    def test_on_debian_branch(self, testpkg, monkeypatch):
+        # set our current branch to be a debian branch:
+        git('checkout', 'ceph-2-ubuntu')
+        recorder = CallRecorder()
+        monkeypatch.setattr('subprocess.check_call', recorder)
         localbuild = MergePatches([])
         localbuild._run()
         # Verify that we run the "git fetch" command here.
         expected = ['git', 'fetch', '.',
                     'patches/ceph-2-rhel-patches:patch-queue/ceph-2-ubuntu']
-        assert self.last_cmd == expected
+        assert recorder.args == expected
 
-    def test_merge_patch_on_patch_queue_branch(self, monkeypatch):
-        monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
-        # set current_branch() to a patch-queue branch:
-        monkeypatch.setattr('rhcephpkg.util.current_branch',
-                            lambda: 'patch-queue/ceph-2-ubuntu')
+    def test_on_patch_queue_branch(self, testpkg, monkeypatch):
+        # set our current branch to be a patch-queue branch:
+        git('checkout', 'patch-queue/ceph-2-ubuntu')
+        recorder = CallRecorder()
+        monkeypatch.setattr('subprocess.check_call', recorder)
         localbuild = MergePatches([])
         localbuild._run()
         # Verify that we run the "git merge" command here.
         expected = ['git', 'pull', '--ff-only', 'patches/ceph-2-rhel-patches']
-        assert self.last_cmd == expected
+        assert recorder.args == expected
 
-    def test_force_on_debian_branch(self, monkeypatch):
-        monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
+    def test_force_on_debian_branch(self, testpkg, monkeypatch):
         # set current_branch() to a debian branch:
-        monkeypatch.setattr('rhcephpkg.util.current_branch',
-                            lambda: 'ceph-2-ubuntu')
+        git('checkout', 'ceph-2-ubuntu')
+        recorder = CallRecorder()
+        monkeypatch.setattr('subprocess.check_call', recorder)
         localbuild = MergePatches([])
         localbuild._run(force=True)
         # Verify that we run the "git push" command here.
         expected = ['git', 'push', '.',
                     '+patches/ceph-2-rhel-patches:patch-queue/ceph-2-ubuntu']
-        assert self.last_cmd == expected
+        assert recorder.args == expected
 
-    def test_force_on_patch_queue_branch(self, monkeypatch):
-        monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
+    def test_force_on_patch_queue_branch(self, testpkg, monkeypatch):
         # set current_branch() to a patch-queue branch:
-        monkeypatch.setattr('rhcephpkg.util.current_branch',
-                            lambda: 'patch-queue/ceph-2-ubuntu')
+        git('checkout', 'patch-queue/ceph-2-ubuntu')
+        recorder = CallRecorder()
+        monkeypatch.setattr('subprocess.check_call', recorder)
         localbuild = MergePatches([])
         localbuild._run(force=True)
         # Verify that we run the "git reset" command here.
         expected = ['git', 'reset', '--hard', 'patches/ceph-2-rhel-patches']
-        assert self.last_cmd == expected
+        assert recorder.args == expected
 
 
 class TestMergePatchesRhelPatchesBranch(object):
