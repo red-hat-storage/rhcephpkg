@@ -3,31 +3,23 @@ import re
 import pytest
 from rhcephpkg import Localbuild
 from rhcephpkg.localbuild import setup_pbuilder_cache
+from rhcephpkg.tests.util import CallRecorder
 
 
 class TestLocalbuild(object):
-
-    def setup_method(self, method):
-        """ Reset last_cmd before each test. """
-        self.last_cmd = None
-
-    def fake_check_call(self, cmd):
-        """ Store cmd, in order to verify it later. """
-        self.last_cmd = cmd
-        return 0
-
     @pytest.mark.parametrize('args,expected', [
         (['localbuild'], '--git-dist=trusty'),
         (['localbuild', '--dist', 'trusty'], '--git-dist=trusty'),
         (['localbuild', '--dist', 'xenial'], '--git-dist=xenial'),
     ])
     def test_localbuild(self, args, expected, monkeypatch):
-        monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
+        recorder = CallRecorder()
+        monkeypatch.setattr('subprocess.check_call', recorder)
         monkeypatch.setattr('rhcephpkg.Localbuild._get_j_arg',
                             lambda *a: '-j2')
         localbuild = Localbuild(args)
         localbuild.main()
-        assert self.last_cmd == ['gbp', 'buildpackage', expected,
+        assert recorder.args == ['gbp', 'buildpackage', expected,
                                  '--git-arch=amd64', '--git-verbose',
                                  '--git-pbuilder', '-j2', '-us', '-uc']
 
