@@ -1,4 +1,5 @@
 import subprocess
+import six
 from rhcephpkg import Patch
 import pytest
 
@@ -6,7 +7,10 @@ import pytest
 def git(*args):
     """ shortcut for shelling out to git """
     cmd = ['git'] + list(args)
-    return subprocess.check_output(cmd)
+    output = subprocess.check_output(cmd)
+    if six.PY3:
+        return output.decode('utf-8').rstrip()
+    return output.rstrip()
 
 
 class TestPatch(object):

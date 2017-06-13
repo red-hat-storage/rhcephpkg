@@ -1,6 +1,7 @@
 import re
 import subprocess
 import tempfile
+import six
 from tambo import Transport
 import rhcephpkg.util as util
 
@@ -40,7 +41,10 @@ Generate patches from a patch-queue branch.
 
         # Get the new sha1 to insert into the $COMMIT variable in d/rules
         cmd = ['git', 'rev-parse', patches_branch]
-        patches_sha1 = subprocess.check_output(cmd).rstrip()
+        output = subprocess.check_output(cmd)
+        patches_sha1 = output.rstrip()
+        if six.PY3:
+            patches_sha1 = output.decode('utf-8').rstrip()
 
         # Switch to "debian" branch if necessary
         if current_branch != debian_branch:

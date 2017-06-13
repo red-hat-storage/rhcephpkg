@@ -3,6 +3,7 @@ import subprocess
 import pwd
 from textwrap import TextWrapper
 import time
+import six
 from six.moves import configparser
 from jenkins import Jenkins
 
@@ -10,7 +11,10 @@ from jenkins import Jenkins
 def current_branch():
     """ Get our current branch's name """
     cmd = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
-    return subprocess.check_output(cmd).rstrip()
+    output = subprocess.check_output(cmd).rstrip()
+    if six.PY3:
+        return output.decode('utf-8')
+    return output
 
 
 def current_patches_branch():
