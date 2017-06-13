@@ -15,5 +15,7 @@ if [ ${TRAVIS_PYTHON_VERSION:0:1} == 2 ]; then
   pushd git-buildpackage-0.6.9
     sed -i -e '/data_files/d' setup.py
     python setup.py install
+    # gbp 0.6.9 depends on dateutil, but setuptools does not pull it in.
+    pip install python-dateutil
   popd
 fi
