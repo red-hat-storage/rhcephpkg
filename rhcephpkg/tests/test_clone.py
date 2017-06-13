@@ -1,13 +1,18 @@
 import os
 import pytest
 from rhcephpkg import Clone
+from rhcephpkg.tests.util import CallRecorder
 
 
-class TestClone(object):
+class CheckCallRecorder(CallRecorder):
 
-    def setup_method(self, method):
-        """ Reset last_cmd before each test. """
-        self.last_cmd = None
+    def __call__(self, cmd):
+        """ Store cmd, in order to verify it later. """
+        self.called += 1
+        if cmd[:2] == ['git', 'clone']:
+            self.fake_git_clone(*cmd[2:])
+        self.args = cmd
+        return 0
 
     def fake_git_clone(self, *args):
         """ Just make a directory in cwd. """
@@ -17,19 +22,16 @@ class TestClone(object):
             dirname = os.path.basename(args[0])
         os.mkdir(dirname)
 
-    def fake_check_call(self, cmd):
-        """ Store cmd, in order to verify it later. """
-        if cmd[:2] == ['git', 'clone']:
-            self.fake_git_clone(*cmd[2:])
-        self.last_cmd = cmd
-        return 0
+
+class TestClone(object):
 
     def test_basic_clone(self, tmpdir, monkeypatch):
-        monkeypatch.setattr('subprocess.check_call', self.fake_check_call)
+        recorder = CheckCallRecorder()
+        monkeypatch.setattr('subprocess.check_call', recorder)
         monkeypatch.chdir(tmpdir)
         clone = Clone([])
         clone._run('mypkg')
-        assert self.last_cmd == ['git', 'clone',
+        assert recorder.args == ['git', 'clone',
                                  'ssh://kdreyer@git.example.com/ubuntu/mypkg']
 
     def test_already_exists(self, tmpdir, monkeypatch):
