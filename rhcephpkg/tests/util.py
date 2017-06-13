@@ -16,10 +16,12 @@ class CallRecorder(object):
     def __init__(self):
         self.called = 0
 
-    def __call__(self, *a, **kw):
+    def __call__(self, *args, **kwargs):
         self.called += 1
-        self.a = a
-        self.kw = kw
+        try:
+            self.args = args[0]
+        except IndexError:
+            self.args = args
 
 
 def fake_urlopen(req, **kw):
