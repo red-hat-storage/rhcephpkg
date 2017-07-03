@@ -100,8 +100,8 @@ def bump_changelog(changes):
     """ Bump the release value in this changelog. Almost identical to dch, with
     the exception that this will do exactly what we want with "redhat" in the
     version. """
-    version = get_deb_version()
-    version.releaseint += 1
+    current = get_deb_version()
+    version = current.next()
     with open('debian/changelog') as fileh:
         orig = fileh.read()
     header = "%s (%s) stable; urgency=medium\n" % (package_name(), version)
@@ -146,13 +146,44 @@ class DebVersion(object):
         # full package version is like "10.2.0-4redhat1"
         # self.version is like "10.2.0"
         (self.version, release) = full.split('-', 1)
-        # self.releaseint is like "4"
-        # TODO: this could fail on hotfixes, like 0.94.9-4.bz1378549redhat2
-        self.releaseint = int(release.split('redhat', 1)[0])
+        # self.releasenum is like "4" or "0.4" or "0.0.4" or "4.0.bz123"
+        self.releasenum = release.split('redhat', 2)[0]
         # self.redhatint is like "1"
         self.redhatint = int(release.split('redhat', 2)[1])
 
+    def next(self):
+        """
+        Bump this version number and return a new DebVersion.
+
+        eg. "10.2.0-2redhat1" becomes "10.2.0-3redhat1".
+        """
+        parts = self.releasenum.split('.')
+        newparts = []
+        # If all parts look like ints, bump the final one.
+        # If we have a part that isn't in int, bump the part immediately
+        # preceding that one.
+        for i, part in enumerate(parts):
+            try:
+                int(part)
+                newparts.append(part)
+            except ValueError:
+                newparts += parts[i:]
+                i -= 1
+                break
+        if i == -1:
+            # The first part was not an int at all... this is weird and
+            # unexpected, but possible in theory. Be safe and just append ".1".
+            nextreleasenum = self.releasenum + '.1'
+        else:
+            # Increment our last part that looked like an int:
+            newparts[i] = str(int(newparts[i]) + 1)
+            nextreleasenum = '.'.join(newparts)
+        full = '%s-%sredhat%i' % (self.version,
+                                  nextreleasenum,
+                                  self.redhatint)
+        return DebVersion(full)
+
     def __str__(self):
-        return '%s-%iredhat%i' % (self.version,
-                                  self.releaseint,
+        return '%s-%sredhat%i' % (self.version,
+                                  self.releasenum,
                                   self.redhatint)

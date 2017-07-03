@@ -61,6 +61,22 @@ class TestUtilChangelog(object):
         assert str(util.get_deb_version()) == '1.0.0-3redhat1'
 
 
+class TestUtilDebVersion(object):
+    @pytest.mark.parametrize('current,expected', [
+        ('1.0.0-0redhat1', '1.0.0-1redhat1'),
+        ('1.0.0-9redhat1', '1.0.0-10redhat1'),
+        ('1.0.0-10redhat1', '1.0.0-11redhat1'),
+        ('1.0.0-0.1redhat1', '1.0.0-0.2redhat1'),
+        ('1.0.0-0.0.1redhat1', '1.0.0-0.0.2redhat1'),
+        ('10.2.5-28.2.bz1464099redhat1', '10.2.5-28.3.bz1464099redhat1'),
+        ('1.0.0-weird1redhat1', '1.0.0-weird1.1redhat1'),
+    ])
+    def test_next(self, current, expected):
+        ver = util.DebVersion(current)
+        nextver = ver.next()
+        assert str(nextver) == expected
+
+
 class TestUtilGetUserFullname(object):
 
     @pytest.fixture
