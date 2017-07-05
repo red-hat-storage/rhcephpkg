@@ -119,7 +119,7 @@ setup(
     description='Packaging tool for Red Hat Ceph Storage product',
     packages=['rhcephpkg'],
     author='Ken Dreyer',
-    author_email='kdreyer [at] redhat.com',
+    author_email='kdreyer@redhat.com',
     url='https://github.com/red-hat-storage/rhcephpkg',
     version=metadata['version'],
     license='MIT',
