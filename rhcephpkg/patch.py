@@ -8,6 +8,23 @@ import rhcephpkg.util as util
 BZ_REGEX = r'rhbz#(\d+)'
 
 
+def read_rules_file():
+    """ Return contents of debian/rules as a single multiline string.  """
+    with open('debian/rules') as fh:
+        return fh.read()
+
+
+def read_commit():
+    """
+    Return the current $COMMIT sha1 from debian/rules, or None if not found.
+    """
+    commit_re = r'export COMMIT=([0-9a-f]{40})'
+    rules = read_rules_file()
+    m = re.search(commit_re, rules)
+    if m:
+        return m.group(1)
+
+
 class Patch(object):
     help_menu = 'apply patches from patch-queue branch'
     _help = """
@@ -70,12 +87,11 @@ Generate patches from a patch-queue branch.
         subprocess.check_call(cmd)
 
         # Replace $COMMIT sha1 in d/rules
-        with open('debian/rules') as rules:
-            rules_file = rules.read()
-        old = r'export COMMIT=[0-9a-f]{40}'
-        new = 'export COMMIT=%s' % patches_sha1
-        with open('debian/rules', 'w') as fileh:
-            fileh.write(re.sub(old, new, rules_file))
+        old_sha1 = read_commit()
+        if old_sha1:
+            rules = read_rules_file()
+            with open('debian/rules', 'w') as fileh:
+                fileh.write(rules.replace(old_sha1, patches_sha1))
 
         # Get the new patch series
         new_series = self.read_series_file('debian/patches/series')
