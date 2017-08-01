@@ -16,7 +16,7 @@ if [ ${TRAVIS_PYTHON_VERSION:0:1} == 2 ]; then
     sed -i -e '/data_files/d' setup.py
     python setup.py install
     # gbp depends on dateutil, but setuptools does not pull it in.
-    # discussion on git-buildpackage@lists.sigxcpu.org Jul 2017
+    # This packaging bug is fixed in git-buildpackage version 0.8.18.
     pip install python-dateutil
   popd
 fi
