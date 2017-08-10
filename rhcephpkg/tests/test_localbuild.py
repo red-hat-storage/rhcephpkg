@@ -3,6 +3,7 @@ import re
 import pytest
 from rhcephpkg import Localbuild
 from rhcephpkg.localbuild import setup_pbuilder_cache
+from rhcephpkg.localbuild import get_distro
 from rhcephpkg.tests.util import CallRecorder
 
 
@@ -14,6 +15,8 @@ class TestLocalbuild(object):
     ])
     def test_localbuild(self, args, expected, monkeypatch):
         recorder = CallRecorder()
+        monkeypatch.setattr('rhcephpkg.localbuild.get_distro',
+                            lambda: 'trusty')
         monkeypatch.setattr('subprocess.check_call', recorder)
         monkeypatch.setattr('rhcephpkg.Localbuild._get_j_arg',
                             lambda *a: '-j2')
@@ -113,3 +116,32 @@ class TestSetupPbuilderCache(object):
                   '--variant=buildd', '--basetgz', pbuilder_cache,
                   '--distribution', 'trusty']
         assert self.cmds == [rm, create]
+
+
+class TestGetDistro(object):
+
+    @pytest.mark.parametrize('branch,expected', [
+        ('ceph-1.3-ubuntu', 'trusty'),
+        ('ceph-1.3-trusty', 'trusty'),
+        ('ceph-2-ubuntu', 'xenial'),
+        ('ceph-2-trusty', 'trusty'),
+        ('ceph-2-xenial', 'xenial'),
+        ('ceph-3.0-ubuntu', 'xenial'),
+        ('private-kdreyer-ceph-1.3-ubuntu', 'trusty'),
+        ('private-kdreyer-ceph-3.0-ubuntu', 'xenial'),
+    ])
+    def test_branch_name(self, monkeypatch, branch, expected):
+        monkeypatch.setattr('rhcephpkg.util.current_branch', lambda: branch)
+        assert get_distro() == expected
+
+    def test_bad_branch_name(self, monkeypatch):
+        branch = 'bad-branch'
+        monkeypatch.setattr('rhcephpkg.util.current_branch', lambda: branch)
+        with pytest.raises(IndexError):
+            assert get_distro()
+
+    def test_too_new_branch_name(self, monkeypatch):
+        branch = 'ceph-4.0-ubuntu'
+        monkeypatch.setattr('rhcephpkg.util.current_branch', lambda: branch)
+        with pytest.raises(NotImplementedError):
+            assert get_distro()

@@ -1,6 +1,7 @@
 import math
 from multiprocessing import cpu_count
 import os
+import re
 import subprocess
 from tambo import Transport
 import rhcephpkg.log as log
@@ -23,13 +24,53 @@ def setup_pbuilder_cache(pbuilder_cache, distro):
         subprocess.check_call(cmd)
 
 
+def get_distro():
+    """
+    Automatically determine the distro to use, based on the dist-git branch
+    name.
+    """
+    branch = util.current_branch()
+    branch = re.sub('^private-[^-]+-', '', branch)
+    parts = branch.split('-')  # ['ceph', '3.0', 'ubuntu']
+    try:
+        distro = parts[2]
+    except IndexError:
+        log.error('could not parse dist-git branch name "%s" distro' % branch)
+        log.error('try explicitly specifying a distro with --dist')
+        raise
+    if distro != 'ubuntu':
+        return distro
+    if branch.startswith('ceph-1.3'):
+        return 'trusty'
+    if branch.startswith('ceph-2'):
+        return 'xenial'
+    if branch.startswith('ceph-3'):
+        return 'xenial'
+    # TODO: add Ubuntu 18.04 codename here for ceph-4 when available.
+    log.error('unknown default distro for dist-git branch name "%s"' % branch)
+    raise NotImplementedError('specify --dist')
+
+
 class Localbuild(object):
     help_menu = 'build a package on the local system'
     _help = """
 Build a package on the local system, using pbuilder.
 
 Options:
---dist    "xenial" or "trusty". Defaults to "trusty".
+--dist    "xenial" or "trusty". If unspecified, rhcephpkg will choose one
+          based on the current branch's name.
+
+  Rules for automatic distro selection:
+
+    1) If the branch suffix is an ubuntu distro name, use that.
+       eg "ceph-3.0-xenial".
+    2) If a branch has a version number starting with "1.3", return "trusty".
+       eg. "ceph-1.3-ubuntu"
+    3) If a branch has a version number starting with "2" return "xenial".
+       eg. "ceph-2-ubuntu"
+    4) If a branch has a version number starting with "3" return "xenial".
+       eg. "ceph-3.0-ubuntu"
+    5) Otherwise raise, because we need to add more rules.
 """
     name = 'localbuild'
 
@@ -42,14 +83,13 @@ Options:
         self.parser.catch_help = self.help()
         self.parser.parse_args()
 
-        # FIXME: stop hardcoding trusty. Use the git branch name instead,
-        # translating "-ubuntu" into this local computer's own distro.
-        distro = 'trusty'
         # Allow user to override the distro.
         if self.parser.has('--dist'):
             if self.parser.get('--dist') is None:
                 raise SystemExit('Specify a distro to --dist')
             distro = self.parser.get('--dist')
+        else:
+            distro = get_distro()
 
         if self.parser.unknown_commands:
             log.error('unknown option %s',
