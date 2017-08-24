@@ -39,7 +39,7 @@ class TestPatch(object):
         series_file = testpkg.join('debian').join('patches').join('series')
         assert not series_file.exists()
         p = Patch([])
-        p._run()
+        p.main()
         assert series_file.read() == "0001-add-foobar-script.patch\n"
 
     def test_changelog(self, testpkg):
@@ -47,7 +47,7 @@ class TestPatch(object):
         pytest.importorskip('gbp')
         changelog_file = testpkg.join('debian').join('changelog')
         p = Patch([])
-        p._run()
+        p.main()
         expected = """
 testpkg (1.0.0-3redhat1) stable; urgency=medium
 
@@ -64,27 +64,27 @@ testpkg (1.0.0-3redhat1) stable; urgency=medium
         expected = 'COMMIT=%s' % sha
         assert expected not in rules_file.read()
         p = Patch([])
-        p._run()
+        p.main()
         assert expected in rules_file.read()
 
     def test_no_changes(self, testpkg, capsys):
         """ Verify that we bail when no patches have changed. """
         pytest.importorskip('gbp')
         p = Patch([])
-        p._run()
+        p.main()
         with pytest.raises(SystemExit):
-            p._run()
+            p.main()
         out, _ = capsys.readouterr()
         assert 'No new patches, quitting.' in out
 
     def test_amended_patch(self, testpkg, capsys):
         pytest.importorskip('gbp')
         p = Patch([])
-        p._run()
+        p.main()
         git('checkout', 'patch-queue/ceph-2-ubuntu')
         testpkg.join('foobar.py').write('#!/usr/bin/python')
         git('commit', 'foobar.py', '--amend', '--reset-author', '--no-edit')
-        p._run()
+        p.main()
         changelog_file = testpkg.join('debian').join('changelog')
         expected = """
 testpkg (1.0.0-4redhat1) stable; urgency=medium
