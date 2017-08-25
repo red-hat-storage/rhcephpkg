@@ -128,6 +128,7 @@ setup(
     long_description=LONG_DESCRIPTION,
     scripts=['bin/rhcephpkg'],
     install_requires=[
+        'gbp',
         'python-jenkins>=0.2.1',
         'six',
         'tambo>=0.1.0',

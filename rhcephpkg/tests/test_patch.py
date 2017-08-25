@@ -35,7 +35,6 @@ class TestPatch(object):
 
     def test_series_file(self, testpkg):
         """ Verify that we update the debian/patches/series file correctly. """
-        pytest.importorskip('gbp')
         series_file = testpkg.join('debian').join('patches').join('series')
         assert not series_file.exists()
         p = Patch([])
@@ -44,7 +43,6 @@ class TestPatch(object):
 
     def test_changelog(self, testpkg):
         """ Verify that we update the debian/changelog file correctly. """
-        pytest.importorskip('gbp')
         changelog_file = testpkg.join('debian').join('changelog')
         p = Patch([])
         p.main()
@@ -59,7 +57,6 @@ testpkg (1.0.0-3redhat1) stable; urgency=medium
 
     def test_rules(self, testpkg):
         """ Verify that we update the debian/rules file correctly. """
-        pytest.importorskip('gbp')
         rules_file = testpkg.join('debian').join('rules')
         sha = git('rev-parse', 'patch-queue/ceph-2-ubuntu')
         expected = 'COMMIT=%s' % sha
@@ -70,7 +67,6 @@ testpkg (1.0.0-3redhat1) stable; urgency=medium
 
     def test_no_changes(self, testpkg, capsys):
         """ Verify that we bail when no patches have changed. """
-        pytest.importorskip('gbp')
         p = Patch([])
         p.main()
         with pytest.raises(SystemExit):
@@ -79,7 +75,6 @@ testpkg (1.0.0-3redhat1) stable; urgency=medium
         assert 'No new patches, quitting.' in out
 
     def test_amended_patch(self, testpkg, capsys):
-        pytest.importorskip('gbp')
         p = Patch([])
         p.main()
         git('checkout', 'patch-queue/ceph-2-ubuntu')

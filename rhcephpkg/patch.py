@@ -3,6 +3,7 @@ import subprocess
 import tempfile
 import six
 from tambo import Transport
+import gbp.patch_series
 import rhcephpkg.util as util
 
 BZ_REGEX = r'rhbz#(\d+)'
@@ -189,13 +190,7 @@ Options:
         return bzs
 
     def read_series_file(self, file_):
-        try:
-            import gbp.patch_series
-            return gbp.patch_series.PatchSeries.read_series_file(file_)
-        except ImportError:
-            raise SystemExit(
-                'Please run "sudo apt-get install git-buildpackage" to write '
-                'the patches to ./debian/changelog')
+        return gbp.patch_series.PatchSeries.read_series_file(file_)
 
     def read_git_debian_patches(self):
         """
@@ -206,11 +201,6 @@ Options:
 
         :return: a list of gbp.patch_series.Patch objects
         """
-        try:
-            import gbp.patch_series
-        except ImportError:
-            raise SystemExit(
-                'Please run "sudo apt-get install git-buildpackage"')
         cmd = ['git', 'status', '-s', 'debian/patches/']
         output = subprocess.check_output(cmd)
         if six.PY3:

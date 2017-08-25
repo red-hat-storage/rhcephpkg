@@ -1,10 +1,16 @@
 language: python
 sudo: false
-# Add or remove version for match with Travis support
-python:
-    - 2.7
-    - 3.5
-    - 3.6
+matrix:
+  # Add or remove versions to match what Travis supports
+  include:
+    - python: '2.7'
+      env: GIT_BUILDPACKAGE_SOURCE=trusty
+    - python: '2.7'
+      env: GIT_BUILDPACKAGE_SOURCE=xenial
+    - python: '3.5'
+      env: GIT_BUILDPACKAGE_SOURCE=master
+    - python: '3.6'
+      env: GIT_BUILDPACKAGE_SOURCE=master
 install:
   - ./travisci/install.sh
 script:
