@@ -99,14 +99,7 @@ Generate patches from a patch-queue branch.
         new_series = [p for p in new_series if p.subject not in old_subjects]
 
         # Add patch entries to d/changelog
-        changelog = []
-        for p in new_series:
-            change = p.subject
-            bzs = self.get_rhbzs(p)
-            bzstr = ' '.join(map(lambda x: 'rhbz#%s' % x, bzs))
-            if bzstr != '':
-                change += ' (%s)' % bzstr
-            changelog.append(change)
+        changelog = self.generate_changelog(new_series)
         if len(changelog) == 0:
             # Maybe we rewrote some patch files? Write the raw git-status
             # output to the changelog so we have *something* to work with.
@@ -133,6 +126,22 @@ Generate patches from a patch-queue branch.
         # (This matches the behavior of "rdopkg patch".)
         cmd = ['git', '--no-pager', 'log', '--name-status', 'HEAD~..HEAD']
         subprocess.check_call(cmd)
+
+    def generate_changelog(self, series):
+        """
+        Generate a list of changelog entries for this Patch series.
+
+        :return: a list of strings
+        """
+        changelog = []
+        for p in series:
+            change = p.subject
+            bzs = self.get_rhbzs(p)
+            bzstr = ' '.join(map(lambda x: 'rhbz#%s' % x, bzs))
+            if bzstr != '':
+                change += ' (%s)' % bzstr
+            changelog.append(change)
+        return changelog
 
     def get_rhbzs(self, patch):
         bzs = re.findall(BZ_REGEX, patch.subject)
