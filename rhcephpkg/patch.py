@@ -95,12 +95,12 @@ Generate patches from a patch-queue branch.
 
         # Get the new patch series
         new_series = self.read_series_file('debian/patches/series')
+        # Select only the ones that are new (according to commit subjects)
+        new_series = [p for p in new_series if p.subject not in old_subjects]
 
         # Add patch entries to d/changelog
         changelog = []
         for p in new_series:
-            if p.subject in old_subjects:
-                continue
             change = p.subject
             bzs = self.get_rhbzs(p)
             bzstr = ' '.join(map(lambda x: 'rhbz#%s' % x, bzs))
