@@ -139,6 +139,11 @@ Generate patches from a patch-queue branch.
             # (.git_action attribute), include that in our log.
             try:
                 action = p.git_action
+                # Make common actions human-readable:
+                if action == 'M':
+                    action = 'Modified'
+                if action == 'D':
+                    action = 'Deleted'
                 change = '%s %s' % (action, p.path)
             except AttributeError:
                 # This was a simple patch addition, so just log the patch's
