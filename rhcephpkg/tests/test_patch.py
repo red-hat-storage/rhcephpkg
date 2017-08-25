@@ -90,7 +90,7 @@ testpkg (1.0.0-3redhat1) stable; urgency=medium
         expected = """
 testpkg (1.0.0-4redhat1) stable; urgency=medium
 
-  * M  debian/patches/0001-add-foobar-script.patch
+  * M debian/patches/0001-add-foobar-script.patch (rhbz#123)
 
 """.lstrip("\n")
         result = changelog_file.read()

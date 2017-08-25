@@ -98,13 +98,13 @@ Generate patches from a patch-queue branch.
         # Select only the ones that are new (according to commit subjects)
         new_series = [p for p in new_series if p.subject not in old_subjects]
 
+        if not new_series:
+            # Maybe we rewrote some patch files in place?
+            # Check Git itself for changed files:
+            new_series = self.read_git_debian_patches()
+
         # Add patch entries to d/changelog
         changelog = self.generate_changelog(new_series)
-        if len(changelog) == 0:
-            # Maybe we rewrote some patch files? Write the raw git-status
-            # output to the changelog so we have *something* to work with.
-            cmd = ['git', 'status', '-s', 'debian/patches/']
-            changelog = subprocess.check_output(cmd).splitlines()
         util.bump_changelog(changelog)
 
         # Assemble a standard commit message string "clog".
@@ -135,7 +135,15 @@ Generate patches from a patch-queue branch.
         """
         changelog = []
         for p in series:
-            change = p.subject
+            # If there was some in-place Git modification for this patch,
+            # (.git_action attribute), include that in our log.
+            try:
+                action = p.git_action
+                change = '%s %s' % (action, p.path)
+            except AttributeError:
+                # This was a simple patch addition, so just log the patch's
+                # subject.
+                change = p.subject
             bzs = self.get_rhbzs(p)
             bzstr = ' '.join(map(lambda x: 'rhbz#%s' % x, bzs))
             if bzstr != '':
@@ -156,3 +164,30 @@ Generate patches from a patch-queue branch.
             raise SystemExit(
                 'Please run "sudo apt-get install git-buildpackage" to write '
                 'the patches to ./debian/changelog')
+
+    def read_git_debian_patches(self):
+        """
+        Load all edited Debian patches (from "git status") into Patch objects.
+
+        The returned Patch objects have an extra ".git_action" attribute. Use
+        this to determine what happened to the patch in Git.
+
+        :return: a list of Patch objects
+        """
+        try:
+            from gbp.patch_series import Patch
+        except ImportError:
+            raise SystemExit(
+                'Please run "sudo apt-get install git-buildpackage"')
+        cmd = ['git', 'status', '-s', 'debian/patches/']
+        output = subprocess.check_output(cmd)
+        if six.PY3:
+            output = output.decode('utf-8')
+        patches = []
+        for line in output.splitlines():
+            (action, filename) = line.split()
+            patch = Patch(filename)
+            # Hack: record what happened to this patch file:
+            patch.git_action = action
+            patches.append(patch)
+        return patches
