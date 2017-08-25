@@ -8,6 +8,10 @@ import rhcephpkg.util as util
 BZ_REGEX = r'rhbz#(\d+)'
 
 
+class BzNotFound(Exception):
+    pass
+
+
 def read_rules_file():
     """ Return contents of debian/rules as a single multiline string.  """
     with open('debian/rules') as fh:
@@ -25,17 +29,35 @@ def read_commit():
         return m.group(1)
 
 
+def ensure_bzs(changelog):
+    """
+    Ensure every change has an associated RHBZ number.
+
+    Raise BzNotFound if any changes lack RHBZ numbers.
+    """
+    missing = []
+    for change in changelog:
+        bzs = re.findall(BZ_REGEX, change)
+        if not bzs:
+            missing.append(change)
+    if missing:
+        raise BzNotFound(', '.join(missing))
+
+
 class Patch(object):
     help_menu = 'apply patches from patch-queue branch'
     _help = """
 Generate patches from a patch-queue branch.
 
+Options:
+--nobz    Do not require "Resolves: rhbz#" for every patch. The default is to
+          require them. Use this CLI option to override the default.
 """
     name = 'patch'
 
     def __init__(self, argv):
         self.argv = argv
-        self.options = []
+        self.options = ('--nobz',)
 
     def main(self):
         self.parser = Transport(self.argv, options=self.options)
@@ -105,6 +127,11 @@ Generate patches from a patch-queue branch.
 
         # Add patch entries to d/changelog
         changelog = self.generate_changelog(new_series)
+        try:
+            ensure_bzs(changelog)
+        except BzNotFound:
+            if not self.parser.has('--nobz'):
+                raise
         util.bump_changelog(changelog)
 
         # Assemble a standard commit message string "clog".
