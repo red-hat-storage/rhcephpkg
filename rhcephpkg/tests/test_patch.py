@@ -54,7 +54,8 @@ testpkg (1.0.0-3redhat1) stable; urgency=medium
   * add foobar script (rhbz#123)
 
 """.lstrip("\n")
-        assert changelog_file.read().startswith(expected)
+        result = changelog_file.read()
+        assert result.startswith(expected)
 
     def test_rules(self, testpkg):
         """ Verify that we update the debian/rules file correctly. """
@@ -92,7 +93,8 @@ testpkg (1.0.0-4redhat1) stable; urgency=medium
   * M  debian/patches/0001-add-foobar-script.patch
 
 """.lstrip("\n")
-        assert changelog_file.read().startswith(expected)
+        result = changelog_file.read()
+        assert result.startswith(expected)
 
 
 class FakePatch(object):
