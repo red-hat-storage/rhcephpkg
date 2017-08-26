@@ -143,7 +143,7 @@ Options:
         clog += util.format_changelog(changelog)
 
         # Commit everything with the standard commit message.
-        with tempfile.NamedTemporaryFile() as temp:
+        with tempfile.NamedTemporaryFile(mode='w+') as temp:
             temp.write(clog)
             temp.flush()
             cmd = ['git', 'commit', 'debian/changelog', 'debian/patches',
