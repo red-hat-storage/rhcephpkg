@@ -156,7 +156,7 @@ Options:
 
     def generate_changelog(self, series):
         """
-        Generate a list of changelog entries for this Patch series.
+        Generate a list of changelog entries for this gbp Patch series.
 
         :return: a list of strings
         """
@@ -190,8 +190,8 @@ Options:
 
     def read_series_file(self, file_):
         try:
-            from gbp.patch_series import PatchSeries
-            return PatchSeries.read_series_file(file_)
+            import gbp.patch_series
+            return gbp.patch_series.PatchSeries.read_series_file(file_)
         except ImportError:
             raise SystemExit(
                 'Please run "sudo apt-get install git-buildpackage" to write '
@@ -204,10 +204,10 @@ Options:
         The returned Patch objects have an extra ".git_action" attribute. Use
         this to determine what happened to the patch in Git.
 
-        :return: a list of Patch objects
+        :return: a list of gbp.patch_series.Patch objects
         """
         try:
-            from gbp.patch_series import Patch
+            import gbp.patch_series
         except ImportError:
             raise SystemExit(
                 'Please run "sudo apt-get install git-buildpackage"')
@@ -218,7 +218,7 @@ Options:
         patches = []
         for line in output.splitlines():
             (action, filename) = line.split()
-            patch = Patch(filename)
+            patch = gbp.patch_series.Patch(filename)
             # Hack: record what happened to this patch file:
             patch.git_action = action
             patches.append(patch)
