@@ -100,8 +100,7 @@ Options:
         subprocess.check_call(cmd)
 
         # Bail early if gbp pq did nothing.
-        cmd = ['git', 'status', '-s', 'debian/patches/']
-        if subprocess.check_output(cmd) == '':
+        if not self.read_git_debian_patches_status():
             print('No new patches, quitting.')
             raise SystemExit(1)
 
@@ -192,6 +191,22 @@ Options:
     def read_series_file(self, file_):
         return gbp.patch_series.PatchSeries.read_series_file(file_)
 
+    def read_git_debian_patches_status(self):
+        """
+        Return a list of all edited Debian patch files (from "git status").
+
+        :return: a list of actions/filesname pairs. For example:
+                 [
+                   ['M', 'debian/patches/0001-foo.patch'],
+                   ['D', 'debian/patches/0002-bar.patch'],
+                 ]
+        """
+        cmd = ['git', 'status', '-s', 'debian/patches/']
+        output = subprocess.check_output(cmd)
+        if six.PY3:
+            output = output.decode('utf-8')
+        return [line.split() for line in output.splitlines()]
+
     def read_git_debian_patches(self):
         """
         Load all edited Debian patches (from "git status") into Patch objects.
@@ -201,13 +216,8 @@ Options:
 
         :return: a list of gbp.patch_series.Patch objects
         """
-        cmd = ['git', 'status', '-s', 'debian/patches/']
-        output = subprocess.check_output(cmd)
-        if six.PY3:
-            output = output.decode('utf-8')
         patches = []
-        for line in output.splitlines():
-            (action, filename) = line.split()
+        for (action, filename) in self.read_git_debian_patches_status():
             patch = gbp.patch_series.Patch(filename)
             # Hack: record what happened to this patch file:
             patch.git_action = action
