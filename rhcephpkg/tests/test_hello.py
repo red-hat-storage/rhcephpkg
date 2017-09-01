@@ -12,7 +12,7 @@ class TestHelloJenkins(object):
         hello.main()
         assert recorder.called
 
-    def test_help(self, monkeypatch, capsys):
+    def test_help(self, capsys):
         hello = Hello(['rhcephpkg', '--help'])
         with pytest.raises(SystemExit):
             hello.main()
