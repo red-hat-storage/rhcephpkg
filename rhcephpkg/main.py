@@ -21,6 +21,7 @@ Global Options:
         'build': rhcephpkg.Build,
         'clone': rhcephpkg.Clone,
         'download': rhcephpkg.Download,
+        'gitbz': rhcephpkg.Gitbz,
         'hello': rhcephpkg.Hello,
         'localbuild': rhcephpkg.Localbuild,
         'merge-patches': rhcephpkg.MergePatches,

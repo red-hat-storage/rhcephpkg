@@ -129,6 +129,7 @@ setup(
     scripts=['bin/rhcephpkg'],
     install_requires=[
         'gbp',
+        'python-bugzilla',
         'python-jenkins>=0.2.1',
         'six',
         'tambo>=0.1.0',

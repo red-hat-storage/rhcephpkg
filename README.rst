@@ -59,6 +59,8 @@ Commands
 * ``rhcephpkg hello`` - Test Jenkins authentication. Use this to verify your
   ``user`` and ``token`` settings.
 
+* ``rhcephpkg gitbz`` - Verify each RHBZ in the last Git commit message.
+
 * ``rhcephpkg localbuild`` - Perform a local build using pbuilder.
 
 * ``rhcephpkg merge-patches`` - Do a merge from the RHEL `rdopkg
