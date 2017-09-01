@@ -8,8 +8,8 @@ class TestDownload(object):
     def test_basic_download(self, monkeypatch, tmpdir):
         monkeypatch.setattr('rhcephpkg.download.urlopen', fake_urlopen)
         monkeypatch.chdir(tmpdir)
-        download = Download([])
-        download._run('ceph_10.2.0-2redhat1trusty')
+        download = Download(['rhcephpkg', 'ceph_10.2.0-2redhat1trusty'])
+        download.main()
         expected = [
             'ceph_10.2.0-2redhat1trusty.debian.tar.gz',
             'ceph_10.2.0-2redhat1trusty.dsc',
