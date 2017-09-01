@@ -1,6 +1,7 @@
 import errno
 from io import StringIO
 import os
+import subprocess
 import six
 from six.moves.urllib.parse import urlparse
 from six.moves.http_client import HTTPMessage
@@ -61,3 +62,12 @@ def fake_urlopen(req, **kw):
         response.getheader = lambda x: '1.5' if x == 'X-Jenkins' else None
 
     return response
+
+
+def git(*args):
+    """ shortcut for shelling out to git """
+    cmd = ['git'] + list(args)
+    output = subprocess.check_output(cmd)
+    if six.PY3:
+        return output.decode('utf-8').rstrip()
+    return output.rstrip()

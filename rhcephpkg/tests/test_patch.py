@@ -1,16 +1,6 @@
-import subprocess
-import six
 from rhcephpkg import Patch
 import pytest
-
-
-def git(*args):
-    """ shortcut for shelling out to git """
-    cmd = ['git'] + list(args)
-    output = subprocess.check_output(cmd)
-    if six.PY3:
-        return output.decode('utf-8').rstrip()
-    return output.rstrip()
+from rhcephpkg.tests.util import git
 
 
 class TestPatch(object):
