@@ -13,7 +13,7 @@ class TestHelloJenkins(object):
         assert recorder.called
 
     def test_help(self, capsys):
-        hello = Hello(['rhcephpkg', '--help'])
+        hello = Hello(['rhcephpkg', 'hello', '--help'])
         with pytest.raises(SystemExit):
             hello.main()
         out, _ = capsys.readouterr()
