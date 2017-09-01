@@ -25,6 +25,14 @@ class CheckCallRecorder(CallRecorder):
 
 class TestClone(object):
 
+    def test_no_args(self, capsys):
+        clone = Clone(['rhcephpkg'])
+        with pytest.raises(SystemExit):
+            clone.main()
+        out, _ = capsys.readouterr()
+        expected = clone._help + "\n"
+        assert out == expected
+
     def test_basic_clone(self, tmpdir, monkeypatch):
         recorder = CheckCallRecorder()
         monkeypatch.setattr('subprocess.check_call', recorder)
