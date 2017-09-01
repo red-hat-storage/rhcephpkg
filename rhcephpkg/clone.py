@@ -10,6 +10,27 @@ except ImportError:
     DEVNULL = open(os.devnull, 'wb')
 
 
+def check_git_url(url):
+    cmd = ['git', 'ls-remote', '--exit-code', url]
+    result = subprocess.call(cmd, stdout=DEVNULL, stderr=DEVNULL)
+    return result == 0
+
+
+def find_patches_url(configp, user, pkg):
+    """ Return a verified Git URL for this package's RHEL patches. """
+    try:
+        patchesbaseurl = configp.get('rhcephpkg', 'patchesbaseurl')
+    except configparser.Error:
+        log.info('no patchesbaseurl configured, skipping patches remote')
+        return None
+    # Ubuntu python packages are named eg. "execnet", whereas the RPM name is
+    # "python-execnet".
+    for module in [pkg, 'python-%s' % pkg]:
+        patches_url = patchesbaseurl % {'user': user, 'module': module}
+        if check_git_url(patches_url):
+            return patches_url
+
+
 class Clone(object):
     help_menu = 'clone a package from dist-git'
     _help = """
@@ -18,6 +39,10 @@ Clone a package from dist-git. Your SSH key must be set up in Gerrit.
 Positional Arguments:
 
 [package]  The name of the package to clone.
+
+Python packages are named slightly differently between RHEL and Debian.
+If you pass a package name "python-foo" to this command, rhcephpkg will strip
+off the "python-" prefix and operate on a Debian package name "foo".
 """
     name = 'clone'
 
@@ -50,6 +75,9 @@ Positional Arguments:
         except configparser.Error as err:
             raise SystemExit('Problem parsing .rhcephpkg.conf: %s',
                              err.message)
+        # If we were given an RPM pkg name, switch to the Debian one:
+        if pkg.startswith('python-'):
+            pkg = pkg[7:]
         # TODO: SafeConfigParser might make the "user" interpolation here
         # unnecessary? Need to test, particularly what it does to %(module).
         pkg_url = gitbaseurl % {'user': user, 'module': pkg}
@@ -58,16 +86,9 @@ Positional Arguments:
 
         os.chdir(pkg)
 
-        try:
-            patchesbaseurl = configp.get('rhcephpkg', 'patchesbaseurl')
-        except configparser.Error as err:
-            log.info('no patchesbaseurl configured, skipping patches remote')
-        else:
-            patches_url = patchesbaseurl % {'user': user, 'module': pkg}
-            cmd = ['git', 'ls-remote', '--exit-code', patches_url]
-            result = subprocess.call(cmd, stdout=DEVNULL, stderr=DEVNULL)
-            if result == 0:
-                cmd = ['git', 'remote', 'add', '-f', 'patches', patches_url]
-                subprocess.check_call(cmd)
+        patches_url = find_patches_url(configp, user, pkg)
+        if patches_url:
+            cmd = ['git', 'remote', 'add', '-f', 'patches', patches_url]
+            subprocess.check_call(cmd)
 
         util.setup_pristine_tar_branch()
