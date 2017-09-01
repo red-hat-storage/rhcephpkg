@@ -51,3 +51,13 @@ class TestClone(object):
             clone.main()
         expected = 'mypkg already exists in current working directory.'
         assert str(e.value) == expected
+
+    def test_python_package(self, tmpdir, monkeypatch):
+        recorder = CheckCallRecorder()
+        monkeypatch.setattr('subprocess.check_call', recorder)
+        monkeypatch.chdir(tmpdir)
+        clone = Clone(['rhcephpkg', 'python-apipkg'])
+        clone.main()
+        assert recorder.args == ['git', 'clone',
+                                 'ssh://kdreyer@git.example.com/ubuntu/apipkg']
+        assert tmpdir.join('apipkg').check(dir=1)
