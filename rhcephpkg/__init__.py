@@ -12,4 +12,4 @@ from .source import Source
 __all__ = ['log', 'Build', 'Clone', 'Download', 'Gitbz', 'Hello', 'Localbuild',
            'MergePatches', 'Patch', 'Source']
 
-__version__ = '1.3.0'
+__version__ = '1.4.0'
