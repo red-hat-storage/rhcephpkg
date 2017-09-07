@@ -1,4 +1,3 @@
-import logging
 import re
 import subprocess
 import six
@@ -12,7 +11,6 @@ BZ_REGEX = r'rhbz#(\d+)'
 
 def get_bzapi():
     """ Return a logged-in RHBZ API instance """
-    logging.getLogger('bugzilla').setLevel(logging.WARNING)
     bzapi = Bugzilla('bugzilla.redhat.com')
     if not bzapi.logged_in:
         raise SystemExit('Not logged into BZ')
