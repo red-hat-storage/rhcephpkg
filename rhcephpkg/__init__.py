@@ -13,4 +13,4 @@ from .source import Source
 __all__ = ['log', 'Build', 'CheckoutFromPatches', 'Clone', 'Download',
            'Gitbz', 'Hello', 'Localbuild', 'MergePatches', 'Patch', 'Source']
 
-__version__ = '1.5.1'
+__version__ = '1.5.2'
