@@ -19,6 +19,7 @@ Global Options:
 
     mapper = {
         'build': rhcephpkg.Build,
+        'checkout-from-patches': rhcephpkg.CheckoutFromPatches,
         'clone': rhcephpkg.Clone,
         'download': rhcephpkg.Download,
         'gitbz': rhcephpkg.Gitbz,

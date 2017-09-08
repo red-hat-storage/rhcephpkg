@@ -54,6 +54,10 @@ Commands
 
 * ``rhcephpkg build`` - Trigger a build in Jenkins.
 
+* ``rhcephpkg checkout-from-patches`` - Choose a Debian branch based on a RHEL
+  `rdopkg <https://github.com/softwarefactory-project/rdopkg>`_-style
+  "patches" branch.
+
 * ``rhcephpkg download`` - Download a build's artifacts from chacra.
 
 * ``rhcephpkg hello`` - Test Jenkins authentication. Use this to verify your
