@@ -92,6 +92,10 @@ def get_user_fullname():
 
 def get_user_email():
     """ Get a user's redhat email. """
+    if 'DEBEMAIL' in os.environ:
+        return os.environ['DEBEMAIL']
+    if 'EMAIL' in os.environ:
+        return os.environ['EMAIL']
     c = config()
     return c.get('rhcephpkg', 'user') + '@redhat.com'
 

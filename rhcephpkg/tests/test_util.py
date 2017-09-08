@@ -101,6 +101,19 @@ class TestUtilGetUserFullname(object):
 
 class TestUtilGetUserEmail(object):
 
+    @pytest.fixture(autouse=True)
+    def setup(self, monkeypatch):
+        monkeypatch.delenv('DEBEMAIL', raising=False)
+        monkeypatch.delenv('MAIL', raising=False)
+
+    def test_debemail_env(self, monkeypatch):
+        monkeypatch.setenv('DEBEMAIL', 'debemail@redhat.com')
+        assert util.get_user_email() == 'debemail@redhat.com'
+
+    def test_email_env(self, monkeypatch):
+        monkeypatch.setenv('EMAIL', 'plainname@redhat.com')
+        assert util.get_user_email() == 'plainname@redhat.com'
+
     def test_config(self):
         assert util.get_user_email() == 'kdreyer@redhat.com'
 
