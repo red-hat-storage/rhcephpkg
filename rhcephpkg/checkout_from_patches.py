@@ -1,6 +1,6 @@
-import os
 import re
 import subprocess
+import six
 from tambo import Transport
 import rhcephpkg.log as log
 
@@ -68,9 +68,8 @@ Positional Arguments:
         """
         patches_re = re.compile('-rhel-patches')
         debian_re = patches_re.sub('-([a-z]+)', patches_branch)
-        branches = os.listdir('.git/refs/remotes/origin/')
         ubuntu_branch = None
-        for branch in branches:
+        for branch in self.get_origin_branches():
             m = re.search(debian_re, branch)
             if m:
                 if m.group(1) == 'ubuntu':
@@ -79,3 +78,13 @@ Positional Arguments:
                 else:
                     return branch
         return ubuntu_branch
+
+    def get_origin_branches(self):
+        """ Return a list of all the branches in the "origin" remote. """
+        cmd = ['git', 'branch', '-r', '--list', 'origin/*']
+        output = subprocess.check_output(cmd)
+        if six.PY3:
+            output = output.decode('utf-8')
+        lines = output.split("\n")
+        branches = [line.strip()[7:] for line in lines]
+        return branches
