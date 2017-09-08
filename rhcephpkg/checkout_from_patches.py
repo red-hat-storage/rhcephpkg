@@ -70,7 +70,7 @@ Positional Arguments:
         debian_re = patches_re.sub('-([a-z]+)', patches_branch)
         ubuntu_branch = None
         for branch in self.get_origin_branches():
-            m = re.search(debian_re, branch)
+            m = re.match('^%s$' % debian_re, branch)
             if m:
                 if m.group(1) == 'ubuntu':
                     # Use this only if we could find no other distro branch.

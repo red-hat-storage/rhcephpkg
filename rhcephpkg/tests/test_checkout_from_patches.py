@@ -18,17 +18,21 @@ class TestCheckoutFromPatches(object):
         sha = output.rstrip()
         if six.PY3:
             sha = output.decode('utf-8').rstrip()
-        branches = ['ceph-2-xenial',
+        branches = ['ceph-1.3-trusty',
+                    'ceph-2-ubuntu',
+                    'patch-queue/ceph-2-ubuntu',
                     'ceph-3.0-ubuntu',
+                    'patch-queue/ceph-3.0-ubuntu',
                     'ceph-2-ubuntu-hotfix-bz123',
                     'private-kdreyer-ceph-2-ubuntu-test-bz456']
-        os.makedirs(str(origin))
+        os.makedirs(str(origin.join('patch-queue')))
         for branch in branches:
             origin.join(branch).write(sha)
         return testpkg
 
     @pytest.mark.parametrize('patches_branch,expected', [
-        ('ceph-2-rhel-patches', 'ceph-2-xenial'),
+        ('ceph-1.3-rhel-patches', 'ceph-1.3-trusty'),
+        ('ceph-2-rhel-patches', 'ceph-2-ubuntu'),
         ('ceph-3.0-rhel-patches', 'ceph-3.0-ubuntu'),
         ('ceph-2-rhel-patches-hotfix-bz123', 'ceph-2-ubuntu-hotfix-bz123'),
         ('private-kdreyer-ceph-2-rhel-patches-test-bz456',
@@ -61,7 +65,7 @@ class TestCheckoutFromPatches(object):
         argv = ['checkout-from-patches', 'ceph-2-rhel-patches']
         cfp = CheckoutFromPatches(argv)
         cfp.main()
-        assert recorder.args == ['git', 'checkout', 'ceph-2-xenial']
+        assert recorder.args == ['git', 'checkout', 'ceph-2-ubuntu']
 
     def test_bad_checkout(self, testpkg):
         """ Test a branch that doesn't exist """
