@@ -20,6 +20,16 @@ class TestBuild(object):
         self.kwargs = kwargs
         return 0
 
+    def test_wrong_branch(self, monkeypatch):
+        monkeypatch.setattr('rhcephpkg.util.package_name', lambda: 'mypkg')
+        monkeypatch.setattr('rhcephpkg.util.current_branch',
+                            lambda: 'patch-queue/ceph-2-ubuntu')
+        build = Build(['build'])
+        with pytest.raises(SystemExit) as e:
+            build.main()
+        expected = 'You can switch to the debian branch with "gbp pq switch"'
+        assert str(e.value) == expected
+
     def test_working_build(self, monkeypatch):
         monkeypatch.setattr('jenkins.Jenkins.build_job', self.fake_build_job)
         monkeypatch.setattr('rhcephpkg.util.package_name', lambda: 'mypkg')
