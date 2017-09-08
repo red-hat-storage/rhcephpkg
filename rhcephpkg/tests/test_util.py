@@ -99,6 +99,12 @@ class TestUtilGetUserFullname(object):
         assert util.get_user_fullname() == 'Mr Gecos'
 
 
+class TestUtilGetUserEmail(object):
+
+    def test_config(self):
+        assert util.get_user_email() == 'kdreyer@redhat.com'
+
+
 class TestUtilSetupPristineTarBranch(object):
 
     def test_no_remote_branch(self, testpkg, monkeypatch):
