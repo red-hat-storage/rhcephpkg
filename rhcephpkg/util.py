@@ -65,7 +65,10 @@ def jenkins_connection():
 def package_name():
     """ Get the name of this dist-git package
         (just our current working directory) """
-    return os.path.basename(os.getcwd())
+    cwd = os.getcwd()
+    if not os.path.isdir(os.path.join(cwd, '.git')):
+        raise RuntimeError('%s is not the root of a git clone' % cwd)
+    return os.path.basename(cwd)
 
 
 def setup_pristine_tar_branch():

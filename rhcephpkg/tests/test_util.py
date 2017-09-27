@@ -46,6 +46,13 @@ class TestUtilPackageName(object):
     def test_package_name(self, testpkg, monkeypatch):
         assert util.package_name() == 'testpkg'
 
+    def test_bad_directory(self, testpkg, monkeypatch):
+        monkeypatch.chdir(testpkg.join('debian'))
+        with pytest.raises(RuntimeError) as e:
+            util.package_name()
+        expected = 'testpkg/debian is not the root of a git clone'
+        assert expected in str(e.value)
+
 
 class TestUtilChangelog(object):
 
