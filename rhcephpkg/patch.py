@@ -205,7 +205,11 @@ Options:
         output = subprocess.check_output(cmd)
         if six.PY3:
             output = output.decode('utf-8')
-        return [line.split() for line in output.splitlines()]
+        result = []
+        for line in output.splitlines():
+            if line.endswith('.patch'):
+                result.append(line.split())
+        return result
 
     def read_git_debian_patches(self):
         """
