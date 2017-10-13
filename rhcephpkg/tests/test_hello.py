@@ -23,6 +23,7 @@ class TestHelloJenkins(object):
         # python-jenkins uses a "from" import, "from X import Y", so
         # monkeypatching is trickier.
         monkeypatch.setattr('jenkins.urlopen', fake_urlopen)
+        monkeypatch.setattr('rhcephpkg.jenkins.urlopen', fake_urlopen)
         # Another option would be to use func_code. This globally patches all
         # calls to urlopen(), not just jenkins' calls.
         # monkeypatch.setattr('six.moves.urllib.request.urlopen.func_code',

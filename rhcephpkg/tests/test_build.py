@@ -18,7 +18,15 @@ class TestBuild(object):
         """ Store args/kwargs, in order to verify later. """
         self.args = args
         self.kwargs = kwargs
-        return 0
+        return 123  # return a fake queue ID number.
+
+    def fake_get_queue_item(self, id_):
+        """ Return fake information about a build ID """
+        return {'executable': {'number': 456}}  # return a fake build number.
+
+    def fake_get_build_info(self, build_name, id_):
+        """ Return fake information about a queue ID """
+        return {'building': False, 'duration': 123456, 'result': 'SUCCESS'}
 
     def test_wrong_branch(self, monkeypatch):
         monkeypatch.setattr('rhcephpkg.util.package_name', lambda: 'mypkg')
@@ -31,7 +39,12 @@ class TestBuild(object):
         assert str(e.value) == expected
 
     def test_working_build(self, monkeypatch):
-        monkeypatch.setattr('jenkins.Jenkins.build_job', self.fake_build_job)
+        monkeypatch.setattr('rhcephpkg.jenkins.RhcephpkgJenkins.build_job',
+                            self.fake_build_job)
+        func = 'rhcephpkg.jenkins.RhcephpkgJenkins.get_queue_item'
+        monkeypatch.setattr(func, self.fake_get_queue_item)
+        monkeypatch.setattr('rhcephpkg.watch_build.WatchBuild.watch',
+                            lambda self, build_id: None)
         monkeypatch.setattr('rhcephpkg.util.package_name', lambda: 'mypkg')
         monkeypatch.setattr('rhcephpkg.util.current_branch',
                             lambda: 'ceph-2-ubuntu')
@@ -41,14 +54,3 @@ class TestBuild(object):
         assert self.kwargs == {'parameters': {'BRANCH': 'ceph-2-ubuntu',
                                               'PKG_NAME': 'mypkg'},
                                'token': '5d41402abc4b2a76b9719d911017c592'}
-
-    @pytest.mark.parametrize('arg,expected', [
-        ('0.2.1', True),
-        ('0.3.3', False),
-    ])
-    def test_has_broken_build_job(self, arg, expected, monkeypatch):
-        monkeypatch.setattr('rhcephpkg.build.get_distribution',
-                            lambda x: FakeDistribution(arg))
-        build = Build(())
-        result = build._has_broken_build_job()
-        assert result is expected
