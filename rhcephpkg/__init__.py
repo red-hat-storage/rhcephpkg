@@ -9,8 +9,10 @@ from .localbuild import Localbuild
 from .merge_patches import MergePatches
 from .patch import Patch
 from .source import Source
+from .watch_build import WatchBuild
 
 __all__ = ['log', 'Build', 'CheckoutFromPatches', 'Clone', 'Download',
-           'Gitbz', 'Hello', 'Localbuild', 'MergePatches', 'Patch', 'Source']
+           'Gitbz', 'Hello', 'Localbuild', 'MergePatches', 'Patch', 'Source',
+           'WatchBuild']
 
 __version__ = '1.6.0'

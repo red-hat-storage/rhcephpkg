@@ -28,6 +28,7 @@ Global Options:
         'merge-patches': rhcephpkg.MergePatches,
         'patch': rhcephpkg.Patch,
         'source': rhcephpkg.Source,
+        'watch-build': rhcephpkg.WatchBuild,
     }
 
     def __init__(self, argv=None, parse=True):

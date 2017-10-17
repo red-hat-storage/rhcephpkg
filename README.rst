@@ -75,6 +75,8 @@ Commands
 
 * ``rhcephpkg source`` - Build a source package on the local system.
 
+* ``rhcephpkg watch-build`` - Watch a build-package job in Jenkins.
+
 Installing
 ----------
 
