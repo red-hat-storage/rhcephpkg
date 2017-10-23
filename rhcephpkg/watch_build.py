@@ -59,16 +59,25 @@ For example: "rhcephpkg watch-build 328"
 
         was_building = build_info['building']
         while build_info['building']:
-            elapsed = datetime.now(jenkins_tz) - start
-            # TODO: Xenial has python-humanize (humanize.naturaldelta() here)
-            # Backport the python-humanize package for Trusty? Or drop Trusty?
-            (minutes, seconds) = divmod(elapsed.total_seconds(), 60)
-            # Clear the previous line:
-            msg = '\r%s building for %02d:%02d' % (pkg_name, minutes, seconds)
-            sys.stdout.write(msg)
-            sys.stdout.flush()
-            sleep(10)
-            build_info = jenkins.get_build_info('build-package', build_number)
+            try:
+                elapsed = datetime.now(jenkins_tz) - start
+                # TODO: Xenial has python-humanize (humanize.naturaldelta()
+                # here) Backport the python-humanize package for Trusty? Or
+                # drop Trusty?
+                (minutes, seconds) = divmod(elapsed.total_seconds(), 60)
+                # Clear the previous line:
+                msg = '\r%s building for %02d:%02d' % \
+                    (pkg_name, minutes, seconds)
+                sys.stdout.write(msg)
+                sys.stdout.flush()
+                sleep(10)
+                build_info = jenkins.get_build_info('build-package',
+                                                    build_number)
+            except KeyboardInterrupt:
+                print('')
+                log.info('continue watching with `rhcephpkg watch-build %s`' %
+                         build_number)
+                raise SystemExit()
         if was_building:
             # The above "while" loop will not print a final newline.
             print('')
