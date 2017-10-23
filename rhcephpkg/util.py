@@ -39,13 +39,16 @@ def current_debian_branch():
         return current
 
 
-def ensure_local_branch(branch):
+def ensure_local_branch(branch, output=False):
     """
     Ensure our local branch exists, tracks origin, and is pointed at the same
     sha1 as the origin remote's branch.
     """
     cmd = ['git', 'branch', '--force', '--track', branch, 'origin/%s' % branch]
-    subprocess.call(cmd, stdout=DEVNULL, stderr=DEVNULL)
+    if output:
+        subprocess.call(cmd)
+    else:
+        subprocess.call(cmd, stdout=DEVNULL, stderr=DEVNULL)
 
 
 def ensure_patch_queue_branch():
@@ -98,10 +101,7 @@ def setup_pristine_tar_branch():
         # If there is no "origin/pristine-tar" branch, this package doesn't use
         # pristine-tar, and we don't care.
         return
-    if not os.path.exists('.git/refs/heads/pristine-tar'):
-        cmd = ['git', 'branch', '--track', 'pristine-tar',
-               'origin/pristine-tar']
-        subprocess.call(cmd)
+    ensure_local_branch('pristine-tar', output=True)
 
 
 def get_user_fullname():

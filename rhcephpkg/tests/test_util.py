@@ -151,8 +151,8 @@ class TestUtilSetupPristineTarBranch(object):
         recorder = CallRecorder()
         monkeypatch.setattr('subprocess.call', recorder)
         util.setup_pristine_tar_branch()
-        expected = ['git', 'branch', '--track', 'pristine-tar',
-                    'origin/pristine-tar']
+        expected = ['git', 'branch', '--force', '--track',
+                    'pristine-tar', 'origin/pristine-tar']
         assert recorder.args == expected
 
     def test_remote_and_local_branches_present(self, testpkg, monkeypatch):
@@ -163,4 +163,6 @@ class TestUtilSetupPristineTarBranch(object):
         recorder = CallRecorder()
         monkeypatch.setattr('subprocess.call', recorder)
         util.setup_pristine_tar_branch()
-        assert recorder.called == 0
+        expected = ['git', 'branch', '--force', '--track',
+                    'pristine-tar', 'origin/pristine-tar']
+        assert recorder.args == expected
