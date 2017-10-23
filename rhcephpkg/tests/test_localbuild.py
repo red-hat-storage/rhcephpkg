@@ -9,14 +9,12 @@ from rhcephpkg.tests.util import CallRecorder
 
 class TestLocalbuild(object):
     @pytest.mark.parametrize('args,expected', [
-        (['localbuild'], '--git-dist=trusty'),
+        (['localbuild'], '--git-dist=xenial'),
         (['localbuild', '--dist', 'trusty'], '--git-dist=trusty'),
         (['localbuild', '--dist', 'xenial'], '--git-dist=xenial'),
     ])
-    def test_localbuild(self, args, expected, monkeypatch):
+    def test_localbuild(self, testpkg, args, expected, monkeypatch):
         recorder = CallRecorder()
-        monkeypatch.setattr('rhcephpkg.localbuild.get_distro',
-                            lambda: 'trusty')
         monkeypatch.setattr('subprocess.check_call', recorder)
         monkeypatch.setattr('rhcephpkg.Localbuild._get_j_arg',
                             lambda *a: '-j2')
