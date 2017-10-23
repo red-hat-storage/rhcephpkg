@@ -57,6 +57,7 @@ For example: "rhcephpkg watch-build 328"
         # start = start.astimezone(tz.tzlocal())
         log.info('Started %s' % start.strftime("%F %r %z"))
 
+        was_building = build_info['building']
         while build_info['building']:
             elapsed = datetime.now(jenkins_tz) - start
             # TODO: Xenial has python-humanize (humanize.naturaldelta() here)
@@ -68,6 +69,9 @@ For example: "rhcephpkg watch-build 328"
             sys.stdout.flush()
             sleep(10)
             build_info = jenkins.get_build_info('build-package', build_number)
+        if was_building:
+            # The above "while" loop will not print a final newline.
+            print('')
 
         end_millis = build_info['timestamp'] + build_info['duration']
         end_seconds = end_millis / 1000.0
