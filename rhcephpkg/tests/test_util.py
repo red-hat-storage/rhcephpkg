@@ -9,13 +9,13 @@ FIXTURES_DIR = os.path.join(TESTS_DIR, 'fixtures')
 
 class TestUtilCurrentBranch(object):
 
-    def test_current_branch(self, testpkg, monkeypatch):
+    def test_current_branch(self, testpkg):
         assert util.current_branch() == 'ceph-2-ubuntu'
 
-    def test_current_debian_branch(self, testpkg, monkeypatch):
+    def test_current_debian_branch(self, testpkg):
         assert util.current_debian_branch() == 'ceph-2-ubuntu'
 
-    def test_current_patch_queue_branch(self, testpkg, monkeypatch):
+    def test_current_patch_queue_branch(self, testpkg):
         assert util.current_patch_queue_branch() == 'patch-queue/ceph-2-ubuntu'
 
 
@@ -43,7 +43,7 @@ class TestUtilConfig(object):
 
 class TestUtilPackageName(object):
 
-    def test_package_name(self, testpkg, monkeypatch):
+    def test_package_name(self, testpkg):
         assert util.package_name() == 'testpkg'
 
     def test_bad_directory(self, testpkg, monkeypatch):
@@ -62,7 +62,7 @@ class TestUtilChangelog(object):
         expected = "  * a change\n  * some other change\n  * third change\n"
         assert util.format_changelog(changes) == expected
 
-    def test_bump_changelog(self, testpkg, monkeypatch):
+    def test_bump_changelog(self, testpkg):
         """ test bumping a debian changelog """
         assert util.bump_changelog(['some change']) is True
         assert str(util.get_deb_version()) == '1.0.0-3redhat1'
@@ -127,7 +127,7 @@ class TestUtilGetUserEmail(object):
 
 class TestUtilSetupPristineTarBranch(object):
 
-    def test_no_remote_branch(self, testpkg, monkeypatch):
+    def test_no_remote_branch(self, testpkg):
         util.setup_pristine_tar_branch()
         assert not os.path.exists('.git/refs/heads/pristine-tar')
 
