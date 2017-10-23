@@ -74,17 +74,17 @@ Options:
 
         # Determine the names of the patch-queue branch and debian branch
         current_branch = util.current_branch()
-        patches_branch = util.current_patches_branch()
+        patch_queue_branch = util.current_patch_queue_branch()
         debian_branch = util.current_debian_branch()
 
         # TODO: default to fetching from upstream, the way rdopkg patch does.
 
         # Get the new sha1 to insert into the $COMMIT variable in d/rules
-        cmd = ['git', 'rev-parse', patches_branch]
+        cmd = ['git', 'rev-parse', patch_queue_branch]
         output = subprocess.check_output(cmd)
-        patches_sha1 = output.rstrip()
+        patch_queue_sha1 = output.rstrip()
         if six.PY3:
-            patches_sha1 = output.decode('utf-8').rstrip()
+            patch_queue_sha1 = output.decode('utf-8').rstrip()
 
         # Switch to "debian" branch if necessary
         if current_branch != debian_branch:
@@ -113,7 +113,7 @@ Options:
         if old_sha1:
             rules = read_rules_file()
             with open('debian/rules', 'w') as fileh:
-                fileh.write(rules.replace(old_sha1, patches_sha1))
+                fileh.write(rules.replace(old_sha1, patch_queue_sha1))
 
         # Get the new patch series
         new_series = self.read_series_file('debian/patches/series')
@@ -137,7 +137,7 @@ Options:
         # Assemble a standard commit message string "clog".
         clog = "debian: %s\n" % util.get_deb_version()
         clog += "\n"
-        clog += "Add patches from %s\n" % patches_branch
+        clog += "Add patches from %s\n" % patch_queue_branch
         clog += "\n"
         clog += util.format_changelog(changelog)
 

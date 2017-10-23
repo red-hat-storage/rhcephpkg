@@ -15,8 +15,8 @@ class TestUtilCurrentBranch(object):
     def test_current_debian_branch(self, testpkg, monkeypatch):
         assert util.current_debian_branch() == 'ceph-2-ubuntu'
 
-    def test_current_patches_branch(self, testpkg, monkeypatch):
-        assert util.current_patches_branch() == 'patch-queue/ceph-2-ubuntu'
+    def test_current_patch_queue_branch(self, testpkg, monkeypatch):
+        assert util.current_patch_queue_branch() == 'patch-queue/ceph-2-ubuntu'
 
 
 class TestUtilConfig(object):

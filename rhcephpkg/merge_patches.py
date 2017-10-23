@@ -44,11 +44,11 @@ Options:
         # Determine the names of the relevant branches
         current_branch = util.current_branch()
         debian_branch = util.current_debian_branch()
-        patches_branch = util.current_patches_branch()
+        patch_queue_branch = util.current_patch_queue_branch()
         rhel_patches_branch = self.get_rhel_patches_branch(debian_branch)
 
         # Do the merge
-        if current_branch == patches_branch:
+        if current_branch == patch_queue_branch:
             # HEAD is our patch-queue branch. Use "git pull" directly.
             # For example: "git pull --ff-only patches/ceph-2-rhel-patches"
             cmd = ['git', 'pull', '--ff-only',
@@ -63,11 +63,11 @@ Options:
             # "git fetch . \
             #  patches/ceph-2-rhel-patches:patch-queue/ceph-2-ubuntu"
             cmd = ['git', 'fetch', '.',
-                   'patches/%s:%s' % (rhel_patches_branch, patches_branch)]
+                   'patches/%s:%s' % (rhel_patches_branch, patch_queue_branch)]
             if force:
                 # Do a hard push (with "+") instead.
                 cmd = ['git', 'push', '.', '+patches/%s:%s' %
-                       (rhel_patches_branch, patches_branch)]
+                       (rhel_patches_branch, patch_queue_branch)]
         log.info(' '.join(cmd))
         subprocess.check_call(cmd)
 

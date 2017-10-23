@@ -17,7 +17,7 @@ def current_branch():
     return output
 
 
-def current_patches_branch():
+def current_patch_queue_branch():
     """ Get our patch-queue branch's name, based on the current branch """
     current = current_branch()
     if current.startswith('patch-queue/'):
