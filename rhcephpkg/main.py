@@ -26,6 +26,7 @@ Global Options:
         'hello': rhcephpkg.Hello,
         'localbuild': rhcephpkg.Localbuild,
         'merge-patches': rhcephpkg.MergePatches,
+        'new-version': rhcephpkg.NewVersion,
         'patch': rhcephpkg.Patch,
         'source': rhcephpkg.Source,
         'watch-build': rhcephpkg.WatchBuild,

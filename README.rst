@@ -71,6 +71,8 @@ Commands
   <https://github.com/softwarefactory-project/rdopkg>`_-style
   "patches" remote branch to the Ubuntu patch-queue branch.
 
+* ``rhcephpkg new-version`` - Import a new upstream version of a package.
+
 * ``rhcephpkg patch`` - Apply a patch-queue branch to a package.
 
 * ``rhcephpkg source`` - Build a source package on the local system.
