@@ -19,6 +19,20 @@ class TestUtilCurrentBranch(object):
         assert util.current_patch_queue_branch() == 'patch-queue/ceph-2-ubuntu'
 
 
+class TestUtilEnsureBranch(object):
+    def test_ensure_patch_queue_branch(self, testpkg, monkeypatch):
+        remotesdir = testpkg.join('.git').join('refs').mkdir('remotes')
+        remotesdir.mkdir('origin').ensure('patch-queue/ceph-2-ubuntu',
+                                          file=True)
+        recorder = CallRecorder()
+        monkeypatch.setattr('subprocess.call', recorder)
+        util.ensure_patch_queue_branch()
+        expected = ['git', 'branch', '--force', '--track',
+                    'patch-queue/ceph-2-ubuntu',
+                    'origin/patch-queue/ceph-2-ubuntu']
+        assert recorder.args == expected
+
+
 class TestUtilConfig(object):
 
     def test_missing_config_file(self, monkeypatch, tmpdir):

@@ -62,6 +62,7 @@ Options:
             # patch-queue ref. For example:
             # "git fetch . \
             #  patches/ceph-2-rhel-patches:patch-queue/ceph-2-ubuntu"
+            util.ensure_patch_queue_branch()
             cmd = ['git', 'fetch', '.',
                    'patches/%s:%s' % (rhel_patches_branch, patch_queue_branch)]
             if force:

@@ -6,6 +6,10 @@ import time
 import six
 from six.moves import configparser
 from rhcephpkg.jenkins import RhcephpkgJenkins
+try:
+    from subprocess import DEVNULL  # py3
+except ImportError:
+    DEVNULL = open(os.devnull, 'wb')
 
 
 def current_branch():
@@ -33,6 +37,23 @@ def current_debian_branch():
         return current[12:]
     else:
         return current
+
+
+def ensure_local_branch(branch):
+    """
+    Ensure our local branch exists, tracks origin, and is pointed at the same
+    sha1 as the origin remote's branch.
+    """
+    cmd = ['git', 'branch', '--force', '--track', branch, 'origin/%s' % branch]
+    subprocess.call(cmd, stdout=DEVNULL, stderr=DEVNULL)
+
+
+def ensure_patch_queue_branch():
+    """
+    Ensure our local patch-queue branch exists and tracks/matches origin.
+    """
+    pq_branch = current_patch_queue_branch()
+    ensure_local_branch(pq_branch)
 
 
 def config():
