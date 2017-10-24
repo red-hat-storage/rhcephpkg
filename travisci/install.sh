@@ -2,9 +2,7 @@
   
 set -euv
 
-# temporary workaround for flake8 3.5.0 compat
-# https://github.com/tholo/pytest-flake8/issues/34
-pip install git+https://github.com/jezdez/pytest-flake8.git@flake8-3.5.0
+pip install pytest-flake8
 
 pip install pytest-cov python-coveralls
 
