@@ -99,14 +99,14 @@ Options:
         cmd = ['gbp', 'pq', 'export']
         subprocess.check_call(cmd)
 
+        # Add all patch files to Git's index
+        cmd = ['git', 'add', '--all', 'debian/patches']
+        subprocess.check_call(cmd)
+
         # Bail early if gbp pq did nothing.
         if not self.read_git_debian_patches_status():
             print('No new patches, quitting.')
             raise SystemExit(1)
-
-        # Add all patch files to Git's index
-        cmd = ['git', 'add', '--all', 'debian/patches']
-        subprocess.check_call(cmd)
 
         # Replace $COMMIT sha1 in d/rules
         old_sha1 = read_commit()
@@ -212,7 +212,7 @@ Options:
         result = []
         for line in output.splitlines():
             if line.endswith('.patch'):
-                result.append(line.split())
+                result.append(line.split(None, 1))
         return result
 
     def read_git_debian_patches(self):
