@@ -1,4 +1,5 @@
 from rhcephpkg import Patch
+from rhcephpkg.patch import BzNotFound
 import pytest
 from rhcephpkg.tests.util import git
 
@@ -80,6 +81,29 @@ testpkg (1.0.0-4redhat1) stable; urgency=medium
 """.lstrip("\n")
         result = changelog_file.read()
         assert result.startswith(expected)
+
+    def test_delete_earlier_patch(self, testpkg, capsys):
+        """
+        Verify behavior when we delete an earlier .patch file and the others
+        are renamed.
+        """
+        p = Patch([])
+        git('checkout', 'patch-queue/ceph-2-ubuntu')
+        # Add a second "baz" commit:
+        testpkg.join('baz.py').write('#!/usr/bin/python')
+        git('add', 'baz.py')
+        git('commit', 'baz.py', '-m', 'add baz script',
+            '-m', 'Resolves: rhbz#456')
+        testpkg.join('baz.py').ensure(file=True)
+        # Commit both "foobar" and "baz" patches to the dist-git branch:
+        p.main()
+        # Delete both the "foobar" and "baz" patches from our patch-queue:
+        git('checkout', 'patch-queue/ceph-2-ubuntu')
+        git('reset', '--hard', 'HEAD~2')
+        # But really keep the "baz" patch:
+        git('cherry-pick', 'HEAD@{4}')  # this is too fragile :(
+        with pytest.raises(BzNotFound):
+            p.main()
 
 
 class FakePatch(object):
