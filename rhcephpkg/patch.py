@@ -171,6 +171,9 @@ Options:
                     action = 'Modified'
                 if action == 'D':
                     action = 'Deleted'
+                if action == 'R':
+                    # We don't log .patch file renames
+                    continue
                 change = '%s %s' % (action, p.path)
             except AttributeError:
                 # This was a simple patch addition, so just log the patch's
