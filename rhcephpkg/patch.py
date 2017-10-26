@@ -93,7 +93,7 @@ Options:
 
         # Get the original (old) patch series
         old_series = self.read_series_file('debian/patches/series')
-        old_subjects = map(lambda x: x.subject, old_series)
+        old_subjects = [patch.subject for patch in old_series]
 
         # Git-buildpackage pq operation
         cmd = ['gbp', 'pq', 'export']
