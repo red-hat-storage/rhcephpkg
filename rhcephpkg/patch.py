@@ -184,6 +184,10 @@ Options:
         return changelog
 
     def get_rhbzs(self, patch):
+        """
+        Return all RHBZ numbers from a Patch's subject and body.
+        :param patch: gbp.patch_series.Patch``
+        """
         bzs = re.findall(BZ_REGEX, patch.subject)
         bzs.extend(re.findall(BZ_REGEX, patch.long_desc))
         return bzs
