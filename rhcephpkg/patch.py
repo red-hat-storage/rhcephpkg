@@ -192,7 +192,17 @@ Options:
         :param patch: gbp.patch_series.Patch``
         """
         bzs = re.findall(BZ_REGEX, patch.subject)
-        bzs.extend(re.findall(BZ_REGEX, patch.long_desc))
+        body = patch.long_desc
+        try:
+            if patch.git_action == 'D':
+                # patch.long_desc will be empty.
+                # Read the deleted file's description from Git instead.
+                body = self.read_deleted_patch_description(patch.path)
+        except AttributeError:
+            # This was a simple patch addition, so we'll just search this
+            # patch's .long_desc.
+            pass
+        bzs.extend(re.findall(BZ_REGEX, body))
         return bzs
 
     def read_series_file(self, file_):
@@ -234,3 +244,22 @@ Options:
             patch.git_action = action
             patches.append(patch)
         return patches
+
+    def read_deleted_patch_description(self, filename):
+        """
+        Parse a deleted .patch file with gbp.patch_series.Patch.
+
+        For deleted .patch files, most of the gbp.patch_series.Patch
+        attributes from read_git_debian_patches() are empty, because the file
+        no longer exists. More hackery to recover the original .long_desc so
+        we can recover the original RHBZ number.
+
+        :returns: ``str``, the long_desc attribute.
+        """
+        with tempfile.NamedTemporaryFile(mode='w+') as temp:
+            cmd = ['git', 'show', 'HEAD:%s' % filename]
+            subprocess.call(cmd, stdout=temp)
+            temp.flush()
+            temppatch = gbp.patch_series.Patch(temp.name)
+            temppatch._read_info()  # XXX internal API here :(
+            return temppatch.long_desc

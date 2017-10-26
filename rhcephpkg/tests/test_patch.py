@@ -1,5 +1,4 @@
 from rhcephpkg import Patch
-from rhcephpkg.patch import BzNotFound
 import pytest
 from rhcephpkg.tests.util import git
 
@@ -102,8 +101,18 @@ testpkg (1.0.0-4redhat1) stable; urgency=medium
         git('reset', '--hard', 'HEAD~2')
         # But really keep the "baz" patch:
         git('cherry-pick', 'HEAD@{4}')  # this is too fragile :(
-        with pytest.raises(BzNotFound):
-            p.main()
+        p.main()
+        changelog_file = testpkg.join('debian').join('changelog')
+        # Verify we do not mention "baz" here, since it was simply
+        # rebased/renumbered:
+        expected = """
+testpkg (1.0.0-4redhat1) stable; urgency=medium
+
+  * Deleted debian/patches/0001-add-foobar-script.patch (rhbz#123)
+
+""".lstrip("\n")
+        result = changelog_file.read()
+        assert result.startswith(expected)
 
 
 class FakePatch(object):
