@@ -84,6 +84,8 @@ Installing
 
 Pre-built Ubuntu Trusty and Xenial packages are available::
 
+  sudo apt-get update
+  sudo apt-get -y install software-properties-common
   sudo apt-add-repository ppa:kdreyer-redhat/rhceph
   sudo apt-get update
   sudo apt-get install rhcephpkg
