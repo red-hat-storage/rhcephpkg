@@ -90,6 +90,11 @@ Pre-built Ubuntu Trusty and Xenial packages are available::
   sudo apt-get update
   sudo apt-get install rhcephpkg
 
+Developing rhcephpkg
+--------------------
+
+See ``HACKING.rst`` to get started with running rhcephpkg directly from Git.
+
 TODO
 ----
 
