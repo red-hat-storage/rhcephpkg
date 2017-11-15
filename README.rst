@@ -111,6 +111,8 @@ Developing rhcephpkg
 
 See ``HACKING.rst`` to get started with running rhcephpkg directly from Git.
 
+See ``RELEASING.rst`` to walk through publishing new rhcephpkg versions.
+
 TODO
 ----
 
