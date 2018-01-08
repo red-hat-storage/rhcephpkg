@@ -65,6 +65,8 @@ Commands
 
 * ``rhcephpkg gitbz`` - Verify each RHBZ in the last Git commit message.
 
+* ``rhcephpkg list-builds`` - List builds for a package in chacra.
+
 * ``rhcephpkg localbuild`` - Perform a local build using pbuilder.
 
 * ``rhcephpkg merge-patches`` - Do a merge from the RHEL `rdopkg
