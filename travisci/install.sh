@@ -23,6 +23,14 @@ GBP_URL=${GBP_SOURCES[$GIT_BUILDPACKAGE_SOURCE]}
 GBP_FILE=$(basename ${GBP_URL})
 GBP_DIR=$(echo $GBP_FILE | sed -e "s/.tar.[gx]z$//" -e "s/_/-/")
 
+if ! type wget > /dev/null; then
+  apt-get -y install wget
+fi
+if ! type xz > /dev/null; then
+  apt-get -y install xz-utils
+fi
+
+
 wget -nc $GBP_URL
 
 if [[ "$GBP_FILE" == *.xz ]]; then
