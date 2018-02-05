@@ -90,6 +90,20 @@ Pre-built Ubuntu Trusty and Xenial packages are available::
   sudo apt-get update
   sudo apt-get install rhcephpkg
 
+SSL validation
+--------------
+
+Some operations (like ``build``) will contact web services secured with Red
+Hat's internal CA. You must trust this CA on your local system to avoid SSL
+verification errors. Here is an example of how to do that on Ubuntu::
+
+  cd /usr/local/share/ca-certificates/
+  curl -O https://password.corp.redhat.com/RH-IT-Root-CA.crt
+  update-ca-certificates
+
+"RH-IT-Root-CA.crt" is the public cert that signed the web server's HTTPS
+certificate.
+
 Developing rhcephpkg
 --------------------
 
