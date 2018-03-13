@@ -1,6 +1,7 @@
 import pytest
 from rhcephpkg.new_version import NewVersion
 from rhcephpkg.tests.util import CallRecorder
+from rhcephpkg.tests.util import git
 
 
 def test_good_gbp_settings(testpkg):
@@ -14,6 +15,7 @@ def test_bad_gbp_pristine_tar(testpkg):
 [DEFAULT]
 pristine-tar = False
 merge-mode = replace
+upstream-branch = upstream/ceph-2-ubuntu
 """
     gbpfile.write(contents)
     nv = NewVersion(['rhcephpkg'])
@@ -26,6 +28,20 @@ def test_bad_gbp_merge_mode(testpkg):
     contents = """
 [DEFAULT]
 pristine-tar = True
+upstream-branch = upstream/ceph-2-ubuntu
+"""
+    gbpfile.write(contents)
+    nv = NewVersion(['rhcephpkg'])
+    with pytest.raises(RuntimeError):
+        nv.ensure_gbp_settings()
+
+
+def test_bad_upstream_branch(testpkg):
+    gbpfile = testpkg.join('debian').join('gbp.conf')
+    contents = """
+[DEFAULT]
+pristine-tar = True
+merge-mode = replace
 """
     gbpfile.write(contents)
     nv = NewVersion(['rhcephpkg'])
@@ -96,6 +112,8 @@ testpkg (2.0.0-2redhat1) xenial; urgency=low
 
 
 def test_main(testpkg, monkeypatch):
+    # Fake the "upstream/1.0" tag that `gbp import-orig` would've created:
+    git('tag', '-a', 'upstream/1.0', '-m', 'Upstream version 1.0')
     recorder = CallRecorder()
     monkeypatch.setattr('subprocess.check_call', recorder)
     nv = NewVersion(['rhcephpkg'])
