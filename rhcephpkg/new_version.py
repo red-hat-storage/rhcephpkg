@@ -1,6 +1,7 @@
 import subprocess
 import tempfile
 from gbp.config import GbpOptionParser
+from gbp.deb.git import DebianGitRepository
 from tambo import Transport
 import rhcephpkg.util as util
 import rhcephpkg.log as log
@@ -61,12 +62,8 @@ Optional Arguments:
 
         self.setup_upstream_branch()
         self.import_orig(tarball)
-        self.run_dch()
-        self.insert_rhbzs(bugstr)
-
-        # Edit debian/changelog and change the release from gbp-dch's -1
-        # to -2redhat1.
-        changelog.replace_release('2redhat1')
+        version = self.upstream_version()
+        self.run_dch(version, bugstr)
 
         self.commit()
         self.show()
@@ -104,26 +101,36 @@ Optional Arguments:
         log.info(' '.join(cmd))
         subprocess.check_call(cmd)
 
-    def run_dch(self):
-        """ Bump debian/changelog for a new release """
-        cmd = ['gbp', 'dch', '--auto', '-R', '--spawn-editor=never']
+    def upstream_version(self):
+        """
+        Find the upstream version we just imported.
+
+        git-buildpackage import-orig will generate this "upstream" tag
+        automatically, and we can use it to discover the version of the
+        current branch. It uses git-describe, like so:
+
+          git describe --match 'upstream/*' --abbrev=0
+
+        (Note: this method is similar to gbp.deb.git.DebianGitRepository
+        debian_version_from_upstream(), but that appends the debian
+        release number "-1", and we don't want that here.)
+        """
+        repo = DebianGitRepository('.')
+        tag = repo.find_branch_tag('HEAD', 'HEAD', pattern='upstream/*')
+        # should we get tagformat from GbpOptionParser instead of hardcoding?
+        tagformat = "upstream/%(version)s"
+        return repo.tag_to_version(tag, tagformat)
+
+    def run_dch(self, version, bugstr):
+        """ Edit debian/changelog for a new upstream release """
+        version_release = version + '-2redhat1'
+        text = 'Imported Upstream version %s' % version
+        if bugstr:
+            text = '%s (%s)' % (text, bugstr)
+        dist = changelog.distribution()  # reuse previous distribution
+        cmd = ['dch', '-D', dist, '-v', version_release, text]
         log.info(' '.join(cmd))
         subprocess.check_call(cmd)
-
-    def insert_rhbzs(self, bugstr):
-        """
-        Edit debian/changelog in place and add any RHBZ numbers.
-
-        :param bzs: string
-        """
-        if not bugstr:
-            return
-        changes = changelog.list_changes()
-        if len(changes) > 1:
-            # defensively verify that dch only inserted one entry.
-            raise RuntimeError('unexpected entries in d/changelog')
-        changes[0] = '%s (%s)' % (changes[0], bugstr)
-        changelog.replace_changes(changes)
 
     def commit(self):
         """

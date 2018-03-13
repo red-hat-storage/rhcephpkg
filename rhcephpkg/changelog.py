@@ -6,6 +6,18 @@ from gbp.deb.changelog import ChangeLog
 from rhcephpkg.util import format_changelog
 
 
+def distribution():
+    """
+    Return the "distribution" (eg. "stable" or "xenial") from our most recent
+    debian/changelog entry.
+
+    :returns: ``str``
+    """
+    clog = ChangeLog(filename='debian/changelog')
+    # clog['Distribution'] is from dpkg-parsechangelog.
+    return clog['Distribution']
+
+
 def changes_string():
     """
     Return the "Changes" (bulleted entries) from our most recent

@@ -29,6 +29,10 @@ testpkg (1.0.0-2redhat1) stable; urgency=medium
     return tmpdir
 
 
+def test_distribution():
+    assert changelog.distribution() == 'stable'
+
+
 def test_changes_string():
     expected = """
    * update to 1.1.0
