@@ -57,6 +57,14 @@ Optional Arguments:
         return self._help
 
     def _run(self, tarball, bugstr):
+        # Ensure we're on the right branch.
+        current_branch = util.current_branch()
+        debian_branch = util.current_debian_branch()
+        if current_branch != debian_branch:
+            log.error('current branch is "%s"' % current_branch)
+            log.error('debian branch is "%s"' % debian_branch)
+            raise RuntimeError('Must run `new-version` on debian branch')
+
         util.setup_pristine_tar_branch()
         self.ensure_gbp_settings()
 
