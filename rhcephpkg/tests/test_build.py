@@ -39,10 +39,9 @@ class TestBuild(object):
         assert str(e.value) == expected
 
     def test_working_build(self, monkeypatch):
-        monkeypatch.setattr('rhcephpkg.jenkins.RhcephpkgJenkins.build_job',
-                            self.fake_build_job)
-        func = 'rhcephpkg.jenkins.RhcephpkgJenkins.get_queue_item'
-        monkeypatch.setattr(func, self.fake_get_queue_item)
+        monkeypatch.setattr('jenkins.Jenkins.build_job', self.fake_build_job)
+        monkeypatch.setattr('jenkins.Jenkins.get_queue_item',
+                            self.fake_get_queue_item)
         monkeypatch.setattr('rhcephpkg.watch_build.WatchBuild.watch',
                             lambda self, build_id: None)
         monkeypatch.setattr('rhcephpkg.util.package_name', lambda: 'mypkg')

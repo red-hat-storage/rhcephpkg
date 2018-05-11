@@ -54,13 +54,6 @@ def fake_urlopen(req, **kw):
 
     response = urlopen('file://' + localfile)
 
-    # Inject X-Jenkins response header here, if needed.
-    # ...hacks ahead
-    if six.PY2 and 'jenkins' in o.netloc:
-        response.headers = HTTPMessage(StringIO(u'X-Jenkins: 1.5'))
-    if six.PY3 and 'jenkins' in o.netloc:
-        response.getheader = lambda x: '1.5' if x == 'X-Jenkins' else None
-
     return response
 
 

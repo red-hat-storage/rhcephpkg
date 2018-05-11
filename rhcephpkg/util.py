@@ -5,7 +5,7 @@ from textwrap import TextWrapper
 import time
 import six
 from six.moves import configparser
-from rhcephpkg.jenkins import RhcephpkgJenkins
+from jenkins import Jenkins
 try:
     from subprocess import DEVNULL  # py3
 except ImportError:
@@ -77,7 +77,7 @@ def jenkins_connection():
         except configparser.Error as err:
             raise SystemExit('Problem parsing .rhcephpkg.conf: %s',
                              err.message)
-        jenkins = RhcephpkgJenkins(url, username=user, password=token)
+        jenkins = Jenkins(url, username=user, password=token)
         # These "password" and "url" attributes are not formally part of
         # python-jenkins' API, but they are nice to make available to consumers
         # (for logging/debugging, for example.)
