@@ -13,7 +13,14 @@ except ImportError:
 
 
 def current_branch():
-    """ Get our current branch's name """
+    """ Ensure we're on a git branch, and returns the current branch's name.
+
+    :raises: subprocess.CalledProcessError if this is not a Git repo, or if
+             HEAD is not a valid ref.
+    """
+    # Note: "git symbolic-ref --short HEAD" will not raise if HEAD is an
+    # invalid ref, so we use "git rev-parse" instead to build in that
+    # additional check here.
     cmd = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
     output = subprocess.check_output(cmd).rstrip()
     if six.PY3:
