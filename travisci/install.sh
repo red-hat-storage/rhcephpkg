@@ -42,6 +42,9 @@ pushd $GBP_DIR
   # In old versions, the setuptools packaging really wants to write to
   # /etc/git-buildpackage/gpb.conf, which we cannot access without root.
   sed -i -e '/data_files/d' setup.py
+  # setuptools cannot handle utf-8 in "scripts". Affects gbp 0.9.8. Resolved
+  # in Git master May 15 2018 (ba32efc1af9e893041dc1752008329b383986786)
+  sed -i 's/ü/u/' bin/gbp-builder-mock || :
   python setup.py install
   # gbp depends on dateutil, but setuptools does not pull it in.
   # This packaging bug is fixed in git-buildpackage version 0.8.18.
