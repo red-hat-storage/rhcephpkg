@@ -17,4 +17,4 @@ __all__ = ['log', 'Build', 'CheckoutFromPatches', 'Clone', 'Download',
            'Gitbz', 'Hello', 'ListBuilds', 'Localbuild', 'MergePatches',
            'NewVersion', 'Patch', 'Source', 'WatchBuild']
 
-__version__ = '1.8.0'
+__version__ = '1.9.0'
