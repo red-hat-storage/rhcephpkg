@@ -4,9 +4,9 @@ matrix:
   # Add or remove versions to match what Travis supports
   include:
     - python: '2.7'
-      env: GIT_BUILDPACKAGE_SOURCE=trusty
-    - python: '2.7'
       env: GIT_BUILDPACKAGE_SOURCE=xenial
+    - python: '3.6'
+      env: GIT_BUILDPACKAGE_SOURCE=bionic
     - python: '3.5'
       env: GIT_BUILDPACKAGE_SOURCE=master
     - python: '3.6'

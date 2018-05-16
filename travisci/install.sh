@@ -9,12 +9,11 @@ pip install pytest-cov python-coveralls
 # Install the version from GitHub master by default.
 # Note: 0.9 is the first gbp version to include full py3 support.
 # Things like `gbp pq export` are broken on py3 before this version.
-# This is why I'm testing master on py3 for now.
 GIT_BUILDPACKAGE_SOURCE=${GIT_BUILDPACKAGE_SOURCE:-master}
 
 declare -A GBP_SOURCES
-GBP_SOURCES[trusty]=http://us.archive.ubuntu.com/ubuntu/pool/universe/g/git-buildpackage/git-buildpackage_0.6.9.tar.xz
 GBP_SOURCES[xenial]=http://us.archive.ubuntu.com/ubuntu/pool/universe/g/git-buildpackage/git-buildpackage_0.7.2.tar.xz
+GBP_SOURCES[bionic]=http://us.archive.ubuntu.com/ubuntu/pool/universe/g/git-buildpackage/git-buildpackage_0.9.8.tar.xz
 GBP_SOURCES[master]=https://github.com/agx/git-buildpackage/archive/master/git-buildpackage-master.tar.gz
 
 # Install the desired version.
