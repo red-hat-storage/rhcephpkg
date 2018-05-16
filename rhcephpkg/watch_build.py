@@ -62,8 +62,7 @@ For example: "rhcephpkg watch-build 328"
             try:
                 elapsed = datetime.now(jenkins_tz) - start
                 # TODO: Xenial has python-humanize (humanize.naturaldelta()
-                # here) Backport the python-humanize package for Trusty? Or
-                # drop Trusty?
+                # here)
                 (minutes, seconds) = divmod(elapsed.total_seconds(), 60)
                 # Clear the previous line:
                 msg = '\r%s building for %02d:%02d' % \

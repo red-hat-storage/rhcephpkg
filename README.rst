@@ -84,7 +84,7 @@ Commands
 Installing
 ----------
 
-Pre-built Ubuntu Trusty and Xenial packages are available::
+Pre-built Ubuntu Xenial packages are available::
 
   sudo apt-get update
   sudo apt-get -y install software-properties-common

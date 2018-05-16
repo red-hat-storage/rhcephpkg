@@ -109,25 +109,10 @@ push your changes to the internal dist-git repository::
   git push origin xenial
 
 Lastly, we also need to copy the package to the older Ubuntu distros we
-support. As of this writing, we build the package in the PPA for Xenial, and
-then I copy the artifacts to Trusty, so users can install rhcephpkg on either
-distro.
-
-To copy a Xenial build for Trusty:
-
-* Click the `Copy Packages <https://launchpad.net/~kdreyer-redhat/+archive/ubuntu/rhceph/+copy-packages>`_ link in the Launchpad UI.
-* Select the box next to your new version's (xenial) build.
-* "Destination PPA" should be the default, "This PPA".
-* "Destination series" should be "Trusty".
-* Choose the "Copy existing binaries" option (The "Rebuild" option is `broken
-  in Launchpad <https://bugs.launchpad.net/bugs/330711>`_).
-* Click the "Copy Packages" button.
-
-Once you initiate this option, Launchpad can take a few minutes to publish the
-build for trusty. You will see the change in the Launchpad UI.
+support. As of this writing, we build the package in the PPA for Xenial.
 
 At this point you should have your new rhcephpkg version available as a .deb
-for both Xenial and Trusty. You can install the new version on your system::
+for Xenial. You can install the new version on your system::
 
   sudo apt-get update
   sudo apt-get -y install rhcephpkg
