@@ -1,7 +1,7 @@
 import os
 import pytest
 import py.path
-import subprocess
+from rhcephpkg.tests.util import git
 
 
 TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -20,15 +20,11 @@ def testpkg(tmpdir, monkeypatch):
     dest = tmpdir.mkdir('testpkg')
     fdir.join('testpkg').copy(dest)
     monkeypatch.chdir(dest)
-    commands = [
-        ['git', 'init', '-q'],
-        ['git', 'config', 'user.name', 'Test User'],
-        ['git', 'config', 'user.email', 'test@example.com'],
-        ['git', 'add', '*'],
-        ['git', 'commit', '-q', '-m', 'initial import'],
-        ['git', 'branch', '-m', 'ceph-2-ubuntu'],
-        ['git', 'branch', 'patch-queue/ceph-2-ubuntu'],
-    ]
-    for c in commands:
-        subprocess.check_call(c)
+    git('init', '-q')
+    git('config', 'user.name', 'Test User')
+    git('config', 'user.email', 'test@example.com')
+    git('add', '*')
+    git('commit', '-q', '-m', 'initial import')
+    git('branch', '-m', 'ceph-2-ubuntu')
+    git('branch', 'patch-queue/ceph-2-ubuntu')
     return dest
