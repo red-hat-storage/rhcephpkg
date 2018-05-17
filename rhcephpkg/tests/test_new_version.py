@@ -1,37 +1,15 @@
 import pytest
-import subprocess
 from rhcephpkg.new_version import NewVersion
 from rhcephpkg.tests.util import CallRecorder
-try:
-    from subprocess import DEVNULL  # py3
-except ImportError:
-    import os
-    DEVNULL = open(os.devnull, 'wb')
 
 
-@pytest.fixture
-def tmpgitdir(tmpdir):
-    cmd = ['git', 'init', str(tmpdir)]
-    subprocess.call(cmd, stdout=DEVNULL, stderr=DEVNULL)
-    return tmpdir
-
-
-def test_good_gbp_settings(monkeypatch, tmpgitdir):
-    monkeypatch.chdir(tmpgitdir)
-    gbpfile = tmpgitdir.mkdir('debian').join('gbp.conf')
-    contents = """
-[DEFAULT]
-pristine-tar = True
-merge-mode = replace
-""".lstrip("\n")
-    gbpfile.write(contents)
+def test_good_gbp_settings(testpkg):
     nv = NewVersion(['rhcephpkg'])
     nv.ensure_gbp_settings()
 
 
-def test_bad_gbp_pristine_tar(monkeypatch, tmpgitdir):
-    monkeypatch.chdir(tmpgitdir)
-    gbpfile = tmpgitdir.mkdir('debian').join('gbp.conf')
+def test_bad_gbp_pristine_tar(testpkg):
+    gbpfile = testpkg.join('debian').join('gbp.conf')
     contents = """
 [DEFAULT]
 pristine-tar = False
@@ -43,9 +21,8 @@ merge-mode = replace
         nv.ensure_gbp_settings()
 
 
-def test_bad_gbp_merge_mode(monkeypatch, tmpgitdir):
-    monkeypatch.chdir(tmpgitdir)
-    gbpfile = tmpgitdir.mkdir('debian').join('gbp.conf')
+def test_bad_gbp_merge_mode(testpkg):
+    gbpfile = testpkg.join('debian').join('gbp.conf')
     contents = """
 [DEFAULT]
 pristine-tar = True
