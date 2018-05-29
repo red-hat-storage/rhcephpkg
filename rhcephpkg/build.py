@@ -33,7 +33,7 @@ Build a package in Jenkins.
         jenkins = util.jenkins_connection()
 
         if branch_name.startswith('patch-queue/'):
-            log.error('%s a patch-queue branch' % branch_name)
+            log.error('%s is a patch-queue branch' % branch_name)
             msg = 'You can switch to the debian branch with "gbp pq switch"'
             raise SystemExit(msg)
 
