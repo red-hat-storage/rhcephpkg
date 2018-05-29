@@ -104,6 +104,7 @@ def package_name():
 
 def setup_pristine_tar_branch():
     """ Ensure .git/refs/heads/pristine-tar is set up. """
+    # Note, gbp has a ``has_pristine_tar_branch`` method. Could we use that?
     if not os.path.exists('.git/refs/remotes/origin/pristine-tar'):
         # If there is no "origin/pristine-tar" branch, this package doesn't use
         # pristine-tar, and we don't care.
