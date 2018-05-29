@@ -109,7 +109,8 @@ push your changes to the internal dist-git repository::
   git push origin xenial
 
 Lastly, we also need to copy the package to the older Ubuntu distros we
-support. As of this writing, we build the package in the PPA for Xenial.
+support. As of this writing, we build the package in the PPA for Xenial only,
+so there's nothing to copy now.
 
 At this point you should have your new rhcephpkg version available as a .deb
 for Xenial. You can install the new version on your system::
