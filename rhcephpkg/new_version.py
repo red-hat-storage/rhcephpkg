@@ -57,9 +57,9 @@ Optional Arguments:
 
     def _run(self, tarball, bugstr):
         util.setup_pristine_tar_branch()
-        util.ensure_local_branch('upstream')
-
         self.ensure_gbp_settings()
+
+        self.setup_upstream_branch()
         self.import_orig(tarball)
         self.run_dch()
         self.insert_rhbzs(bugstr)
@@ -80,6 +80,19 @@ Optional Arguments:
         if parser.config.get('merge-mode') != 'replace':
             err = '"merge-mode" is %s. Set to "replace" in debian/gbp.conf.'
             raise RuntimeError(err % parser.config.get('merge-mode'))
+        # ensure upstream branch is unique for this debian branch
+        debian_branch = parser.config.get('debian-branch')
+        upstream_branch = parser.config.get('upstream-branch')
+        expected = 'upstream/%s' % debian_branch
+        if upstream_branch != expected:
+            err = '"upstream-branch" is "%s". Set to "%s" in debian/gbp.conf.'
+            raise RuntimeError(err % (upstream_branch, expected))
+
+    def setup_upstream_branch(self):
+        """ Ensure we have a local "upstream/foo" branch. """
+        parser = GbpOptionParser('import-orig')
+        upstream_branch = parser.config.get('upstream-branch')
+        util.ensure_local_branch(upstream_branch)
 
     def import_orig(self, tarball=None):
         """ Import new upstream tarball, optionally with uscan. """
