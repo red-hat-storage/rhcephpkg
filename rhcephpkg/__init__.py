@@ -18,7 +18,7 @@ __all__ = ['log', 'Build', 'CheckoutFromPatches', 'Clone', 'Download',
            'Gitbz', 'Hello', 'ListBuilds', 'Localbuild', 'MergePatches',
            'NewVersion', 'Patch', 'Source', 'WatchBuild']
 
-__version__ = '1.10.0'
+__version__ = '1.11.0'
 
 # Always use our system-wide certificate store.
 
