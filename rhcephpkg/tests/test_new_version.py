@@ -68,29 +68,14 @@ def test_import_orig_tarball(monkeypatch):
     assert recorder.args == expected
 
 
-def test_run_dch(monkeypatch):
+def test_run_dch(testpkg, monkeypatch):
     recorder = CallRecorder()
     monkeypatch.setattr('subprocess.check_call', recorder)
     nv = NewVersion(['rhcephpkg'])
-    nv.run_dch()
-    expected = ['gbp', 'dch', '--auto', '-R', '--spawn-editor=never']
+    nv.run_dch('1.0', 'rhbz#123')
+    text = 'Imported Upstream version 1.0 (rhbz#123)'
+    expected = ['dch', '-D', 'xenial', '-v', '1.0-2redhat1', text]
     assert recorder.args == expected
-
-
-def test_insert_rhbzs(testpkg):
-    nv = NewVersion(['rhcephpkg'])
-    bugstr = 'rhbz#445566'
-    nv.insert_rhbzs(bugstr)
-    clog = testpkg.join('debian').join('changelog')
-    contents = clog.read()
-    expected = """
-testpkg (1.0.0-2redhat1) xenial; urgency=low
-
-  * Initial package (rhbz#445566)
-
- -- Ken Dreyer <kdreyer@redhat.com>  Tue, 06 Jun 2017 14:46:37 -0600
-""".lstrip("\n")
-    assert contents == expected
 
 
 def test_commit(testpkg, capfd):

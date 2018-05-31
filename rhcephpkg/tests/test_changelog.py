@@ -29,6 +29,10 @@ testpkg (1.0.0-2redhat1) stable; urgency=medium
     return tmpdir
 
 
+def test_distribution():
+    assert changelog.distribution() == 'stable'
+
+
 def test_changes_string():
     expected = """
    * update to 1.1.0
@@ -52,32 +56,3 @@ def test_list_changes():
         'even more cool packaging updates that take a lot of text to describe so the change wraps on multiple lines',  # noqa E510
     ]
     assert changelog.list_changes() == expected
-
-
-def test_replace_changes(pkgdir):
-    changelog.replace_changes(['update to 1.1.0 (rhbz#456)'])
-    clog = pkgdir.join('debian').join('changelog')
-    contents = clog.read()
-    expected = """
-testpkg (1.1.0-1) stable; urgency=medium
-
-  * update to 1.1.0 (rhbz#456)
-
- -- Ken Dreyer <kdreyer@redhat.com>  Tue, 06 Jun 2017 14:46:37 -0600
-
-testpkg (1.0.0-2redhat1) stable; urgency=medium
-
-  * update to 1.0.0 (rhbz#123)
-
- -- Ken Dreyer <kdreyer@redhat.com>  Mon, 05 Jun 2017 13:45:36 -0600
-""".lstrip("\n")
-    assert contents == expected
-
-
-def test_replace_release(pkgdir):
-    changelog.replace_release('2redhat1')
-    clog = pkgdir.join('debian').join('changelog')
-    contents = clog.readlines(cr=False)
-    firstline = contents[0]
-    expected = "testpkg (1.1.0-2redhat1) stable; urgency=medium"
-    assert firstline == expected
