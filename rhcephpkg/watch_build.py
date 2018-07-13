@@ -76,7 +76,7 @@ For example: "rhcephpkg watch-build 328"
                 print('')
                 log.info('continue watching with `rhcephpkg watch-build %s`' %
                          build_number)
-                raise SystemExit()
+                raise SystemExit(1)
         if was_building:
             # The above "while" loop will not print a final newline.
             print('')
