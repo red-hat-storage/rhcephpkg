@@ -61,5 +61,6 @@ class TestWatchBuild(object):
         monkeypatch.setattr('jenkins.Jenkins.get_build_info',
                             fake_jenkins.get_build_info)
         watch_build = WatchBuild(['watch-build', 123])
-        with pytest.raises(SystemExit):
+        with pytest.raises(SystemExit) as excinfo:
             watch_build.main()
+        assert excinfo.value.code == 1
