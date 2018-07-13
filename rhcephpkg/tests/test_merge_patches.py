@@ -24,8 +24,8 @@ class TestMergePatches(object):
         git('checkout', 'ceph-2-ubuntu')
         recorder = CallRecorder()
         monkeypatch.setattr('subprocess.check_call', recorder)
-        localbuild = MergePatches([])
-        localbuild._run()
+        mergep = MergePatches([])
+        mergep._run()
         # Verify that we run the "git fetch" command here.
         expected = ['git', 'fetch', '.',
                     'patches/ceph-2-rhel-patches:patch-queue/ceph-2-ubuntu']
@@ -36,8 +36,8 @@ class TestMergePatches(object):
         git('checkout', 'patch-queue/ceph-2-ubuntu')
         recorder = CallRecorder()
         monkeypatch.setattr('subprocess.check_call', recorder)
-        localbuild = MergePatches([])
-        localbuild._run()
+        mergep = MergePatches([])
+        mergep._run()
         # Verify that we run the "git merge" command here.
         expected = ['git', 'pull', '--ff-only', 'patches/ceph-2-rhel-patches']
         assert recorder.args == expected
@@ -47,8 +47,8 @@ class TestMergePatches(object):
         git('checkout', 'ceph-2-ubuntu')
         recorder = CallRecorder()
         monkeypatch.setattr('subprocess.check_call', recorder)
-        localbuild = MergePatches([])
-        localbuild._run(force=True)
+        mergep = MergePatches([])
+        mergep._run(force=True)
         # Verify that we run the "git push" command here.
         expected = ['git', 'push', '.',
                     '+patches/ceph-2-rhel-patches:patch-queue/ceph-2-ubuntu']
@@ -59,8 +59,8 @@ class TestMergePatches(object):
         git('checkout', 'patch-queue/ceph-2-ubuntu')
         recorder = CallRecorder()
         monkeypatch.setattr('subprocess.check_call', recorder)
-        localbuild = MergePatches([])
-        localbuild._run(force=True)
+        mergep = MergePatches([])
+        mergep._run(force=True)
         # Verify that we run the "git reset" command here.
         expected = ['git', 'reset', '--hard', 'patches/ceph-2-rhel-patches']
         assert recorder.args == expected
