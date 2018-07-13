@@ -12,6 +12,13 @@ def git(*args):
 
 class TestMergePatches(object):
 
+    def test_help(self, capsys):
+        mergep = MergePatches(['rhcephpkg', 'merge-patches', '--help'])
+        with pytest.raises(SystemExit):
+            mergep.main()
+        out, _ = capsys.readouterr()
+        assert "Fetch the latest patches branch that rdopkg uses" in out
+
     def test_on_debian_branch(self, testpkg, monkeypatch):
         # set our current branch to be a debian branch:
         git('checkout', 'ceph-2-ubuntu')
