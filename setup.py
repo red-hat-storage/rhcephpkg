@@ -85,11 +85,15 @@ class ReleaseCommand(Command):
         subprocess.check_call(cmd)
 
         # Wait for CI to build this tag, so we can push directly to master
-        print('waiting 5 min for Travis CI to mark %s as green' % tag_name)
-        # XXX this long sleep is racy. It would be better to poll
-        # https://api.github.com/repos/red-hat-storage/rhcephpkg/commits/:ref/status
-        # https://developer.github.com/v3/repos/statuses/#list-statuses-for-a-specific-ref
+        sha1 = self.sha1()
+        print('waiting 5 min for Travis CI to mark %s as green' % sha1)
         sleep(5 * 60)
+        state = self.ci_state(sha1)
+        while state == 'pending':
+            print('Travis CI is %s for %s ...' % (state, sha1))
+            sleep(45)
+            state = self.ci_state(sha1)
+        assert state == 'success'
 
         # Push master to the remote
         cmd = ['git', 'push', 'origin', 'master']
@@ -115,6 +119,26 @@ class ReleaseCommand(Command):
             cmd.append(tarball + '.asc')
         print(' '.join(cmd))
         subprocess.check_call(cmd)
+
+    def sha1(self):
+        cmd = ['git', 'rev-parse', 'HEAD']
+        print(' '.join(cmd))
+        output = subprocess.check_output(cmd)
+        if sys.version_info[0] == 2:
+            return output
+        return output.decode('utf-8')
+
+    def ci_state(self, sha1):
+        """ Look up GitHub's status for this sha1 ref """
+        import requests
+        # See https://developer.github.com/v3/repos/statuses/
+        url = 'https://api.github.com/' \
+              'repos/red-hat-storage/rhcephpkg/commits/%s/status' % sha1
+        preview = 'application/vnd.github.howard-the-duck-preview+json'
+        response = requests.get(url, headers={'Accept': preview})
+        response.raise_for_status()
+        data = response.json()
+        return data['state']
 
 
 class PyTest(TestCommand):
