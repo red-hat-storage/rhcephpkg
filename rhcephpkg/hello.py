@@ -32,3 +32,4 @@ Test authentication to Jenkins and return your user's fullName attribute.
         name = data['fullName']  # Our Jenkins instance gets this from LDAP
         jenkins_version = jenkins.get_version()
         print('Hello %s from Jenkins %s' % (name, jenkins_version))
+        print('Logged in to %s' % jenkins.url)

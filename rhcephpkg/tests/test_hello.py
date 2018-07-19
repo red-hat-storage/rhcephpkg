@@ -26,4 +26,6 @@ class TestHelloJenkins(object):
         hello = Hello([])
         hello._run()
         out, _ = capsys.readouterr()
-        assert out == "Hello Ken from Jenkins 1.5\n"
+        expected = "Hello Ken from Jenkins 1.5\n" \
+                   "Logged in to https://ceph-jenkins.example.com/\n"
+        assert out == expected
