@@ -1,3 +1,4 @@
+from time import sleep
 import os
 import re
 import subprocess
@@ -82,6 +83,13 @@ class ReleaseCommand(Command):
         cmd = ['git', 'push', 'origin', tag_name]
         print(' '.join(cmd))
         subprocess.check_call(cmd)
+
+        # Wait for CI to build this tag, so we can push directly to master
+        print('waiting 5 min for Travis CI to mark %s as green' % tag_name)
+        # XXX this long sleep is racy. It would be better to poll
+        # https://api.github.com/repos/red-hat-storage/rhcephpkg/commits/:ref/status
+        # https://developer.github.com/v3/repos/statuses/#list-statuses-for-a-specific-ref
+        sleep(5 * 60)
 
         # Push master to the remote
         cmd = ['git', 'push', 'origin', 'master']

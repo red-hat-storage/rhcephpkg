@@ -21,12 +21,8 @@ pushes the tag and change to the origin remote::
 
   python setup.py release
 
-The final ``git push origin master`` will fail because TravisCI has not passed
-the "version bump commit" yet, and it has a strict gate on the master branch.
-This is annoying and I have not made ``setup.py`` work around it yet. I just
-run ``sleep 5m && git push`` at the end. This hack allows TravisCI to
-build/pass on the Git tag ref first, and then I'm allowed to push the same
-commit ref to master.
+This takes a while for Travis CI to build the "version bump commit", and
+GitHub has a strict gate for pushes to the master branch.
 
 At the end of this first step, you should have a shiny new tag on the master
 branch and a tarball in PyPI. https://pypi.python.org/pypi/rhcephpkg
