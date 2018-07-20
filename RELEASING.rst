@@ -95,6 +95,23 @@ Now we're ready to upload to the PPA::
 
   dput ppa:kdreyer-redhat/rhceph rhcephpkg_1._._-1_source.changes
 
+Example output::
+
+  $USER not set, will use login information.
+  Checking signature on .changes
+  gpg: Signature made Fri Jul 20 10:04:03 2018 MDT using RSA key ID 782096AC
+  gpg: Good signature from "Ken Dreyer <kdreyer@redhat.com>"
+  Good signature on /home/ubuntu/ubuntu-scm/rhcephpkg_1.12.0-1_source.changes.
+  Checking signature on .dsc
+  gpg: Signature made Fri Jul 20 10:04:02 2018 MDT using RSA key ID 782096AC
+  gpg: Good signature from "Ken Dreyer <kdreyer@redhat.com>"
+  Good signature on /home/ubuntu/ubuntu-scm/rhcephpkg_1.12.0-1.dsc.
+  Uploading to ppa (via ftp to ppa.launchpad.net):
+    Uploading rhcephpkg_1.12.0-1.dsc: done.
+    Uploading rhcephpkg_1.12.0.orig.tar.gz: done.
+    Uploading rhcephpkg_1.12.0-1.debian.tar.xz: done.
+    Uploading rhcephpkg_1.12.0-1_source.changes: done.
+
 Launchpad will send an email shortly indiciating that the package has been
 accepted. Watch this page to check the status:
 https://launchpad.net/~kdreyer-redhat/+archive/ubuntu/rhceph/+packages
