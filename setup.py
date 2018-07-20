@@ -123,7 +123,7 @@ class ReleaseCommand(Command):
     def sha1(self):
         cmd = ['git', 'rev-parse', 'HEAD']
         print(' '.join(cmd))
-        output = subprocess.check_output(cmd)
+        output = subprocess.check_output(cmd).strip()
         if sys.version_info[0] == 2:
             return output
         return output.decode('utf-8')
