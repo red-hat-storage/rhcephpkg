@@ -16,7 +16,7 @@ There are two ways to do this:
    your upstream tarball file matches the one RHEL dist-git has.
    ::
 
-       rhcephpkg new-version ../ceph_12.2.4.orig.tar.gz
+       rhcephpkg new-version ../ceph_12.2.8.orig.tar.gz
 
 Note: normally you want to use the ``-B`` flag to indicate which RHBZs you're
 resolving with this new upstream version.
@@ -38,7 +38,7 @@ Step 2: Clone the package::
 
 Step 3: Check out the product-version dist-git branch we want to rebase::
 
-    git checkout ceph-3.0-ubuntu
+    git checkout ceph-3.1-ubuntu
 
 (This sets up the local branch tracking with origin/ceph-3.0-ubuntu)
 
@@ -78,11 +78,13 @@ Step 2: Clone the package::
     rhcephpkg clone ceph
     cd ceph
 
-Step 3: Check out the product-version dist-git branch we want to rebase::
+Step 3: Switch to our dist-git branch. In this example, since it's Ceph, we
+always rebase in conjunction with a new product point release. Start by
+checking out out the latest product-version dist-git branch::
 
-    git checkout ceph-3.0-ubuntu
+    git checkout ceph-3.1-ubuntu
 
-(This sets up the local branch tracking with origin/ceph-3.0-ubuntu)
+(This sets up the local branch tracking with origin/ceph-3.1-ubuntu)
 
 One thing to note here:
 
@@ -91,27 +93,47 @@ One thing to note here:
   the import commit. This allows us to use ``gbp pq export`` to manage
   downstream patches.
 
-Step 4: Place the upstream tarball in the parent directory::
+Step 4: Create our new dist-git branches::
+
+We're on the ``ceph-3.1-ubuntu`` branch, and we need to branch for
+the next product version, ``ceph-3.2-ubuntu``::
+
+    git checkout -b ceph-3.2-ubuntu
+
+The new "upstream" branch does not exist, so we need to create that as well,
+from the tag to which we intend to rebase::
+
+    git branch upstream/ceph-3.2-ubuntu v12.2.8
+
+Step 5: Update ``debian/gbp.conf`` for this new dist-git branch. We must
+configure git-buildpackage to use this new pair of branches we created in the
+previous step::
+
+    vi debian/gbp.conf
+    ...
+    git commit debian/gbp.conf -m 'd/gbp.conf: ceph-3.2-ubuntu'
+
+Step 6: Place the upstream tarball in the parent directory::
 
     cd ~/ubuntu-scm
 
-    # (...copy ceph-12.2.4.tar.gz from RHEL dist-git...)
+    # (...copy ceph-12.2.8.tar.gz from RHEL dist-git...)
 
     # Make sure the filename matches Debian's conventions:
-    mv ceph-12.2.4.tar.gz ceph_12.2.4.orig.tar.gz
+    mv ceph-12.2.8.tar.gz ceph_12.2.8.orig.tar.gz
 
 (Note the tarball must be named like this for gbp-import-orig to process the
 version number correctly.)
 
-Step 5: You can now run ``new-version`` with the tarball argument::
+Step 7: You can now run ``new-version`` with the tarball argument::
 
-    rhcephpkg new-version ../ceph_12.2.4.orig.tar.gz -B "rhbz#1548067 rhbz#1544680"
+    rhcephpkg new-version ../ceph_12.2.8.orig.tar.gz -B "rhbz#1548067 rhbz#1544680"
 
-(rhcephpkg will run ``gbp import-orig`` with ``ceph_12.2.4.orig.tar.gz``, and
+(rhcephpkg will run ``gbp import-orig`` with ``ceph_12.2.8.orig.tar.gz``, and
 add a ``debian/changelog`` entry for this new upstream version along with the
 Bugzilla ticket numbers.)
 
-Step 6: Ceph itself has a couple of quirks that we need to fix up afterwards.
+Step 8: Ceph itself has a couple of quirks that we need to fix up afterwards.
 
 1. Re-do all the patches::
 
@@ -122,14 +144,14 @@ Step 6: Ceph itself has a couple of quirks that we need to fix up afterwards.
 
 2. Make sure the debian/ directory matches upstream. To go change-by-change::
 
-     git checkout -p v12.2.4 debian/
+     git checkout -p v12.2.8 debian/
 
    Make sure to leave the downstream ``.git_version`` manipulation parts in
    ``debian/rules``, and ``debian/changelog`` should not have the changes from
    upstream.
 
 3. Make sure the ``debian/rules`` file has the new sha1. You can find the sha1
-   for the tag with ``git rev-parse v12.2.4^0``.
+   for the tag with ``git rev-parse v12.2.8^0``.
 
 We should probably make ``rhcephpkg new-version`` do some or all of these steps
 automatically in the future.
@@ -142,7 +164,7 @@ Troubleshooting
 
 Let's say the upstream branch does not exist at all yet. You can just create it from the upstream tag, like so::
 
-    git branch upstream/ceph-3.0-ubuntu v12.2.4
+    git branch upstream/ceph-3.2-ubuntu v12.2.8
 
 We should probably make ``rhcephpkg new-version`` do that automatically in the
 future (maybe with an interactive prompt?)
