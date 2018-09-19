@@ -120,7 +120,7 @@ Step 6: Ceph itself has a couple of quirks that we need to fix up afterwards.
    If the patch-queue branch still has existing downstream patches after the
    rebase operation, you can re-apply them now with ``rhcephpkg patch``.
 
-2.  Make sure the debian/ directory matches upstream. To go change-by-change::
+2. Make sure the debian/ directory matches upstream. To go change-by-change::
 
      git checkout -p v12.2.4 debian/
 
@@ -128,7 +128,7 @@ Step 6: Ceph itself has a couple of quirks that we need to fix up afterwards.
    ``debian/rules``, and ``debian/changelog`` should not have the changes from
    upstream.
 
-3.  Make sure the ``debian/rules`` file has the new sha1. You can find the sha1
+3. Make sure the ``debian/rules`` file has the new sha1. You can find the sha1
    for the tag with ``git rev-parse v12.2.4^0``.
 
 We should probably make ``rhcephpkg new-version`` do some or all of these steps
