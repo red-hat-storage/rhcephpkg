@@ -50,9 +50,16 @@ Build a package in Jenkins.
         log.info('This may be safely interrupted...')
         queue_item = jenkins.get_queue_item(queue_number)
         while 'executable' not in queue_item:
-            log.info('queue state: %s' % queue_item['why'])
-            sleep(2)
-            queue_item = jenkins.get_queue_item(queue_number)
+            try:
+                log.info('queue state: %s' % queue_item['why'])
+                sleep(2)
+                queue_item = jenkins.get_queue_item(queue_number)
+            except KeyboardInterrupt:
+                # We have no build_number, so just print a general message with
+                # a basic URL for the user to check.
+                print('')
+                print('Build is queued for starting at %s' % jenkins.url)
+                raise SystemExit(1)
 
         # Job is now running.
         build_number = queue_item['executable']['number']
