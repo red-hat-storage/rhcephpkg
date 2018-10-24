@@ -57,7 +57,7 @@ class TestGetJArg(object):
         # basically re-implementing the entire code here to get the exact
         # expected result, just pattern-match for basic sanity.
         result = localbuild._get_j_arg(cpus=1)
-        assert re.match('-j\d+$', result)
+        assert re.match(r'-j\d+$', result)
 
 
 class TestSetupPbuilderCache(object):
