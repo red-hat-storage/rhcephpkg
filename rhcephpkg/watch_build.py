@@ -6,6 +6,7 @@ from tambo import Transport
 import posixpath
 import rhcephpkg.log as log
 import rhcephpkg.util as util
+import requests.exceptions
 
 
 class WatchBuild(object):
@@ -72,6 +73,11 @@ For example: "rhcephpkg watch-build 328"
                 sleep(10)
                 build_info = jenkins.get_build_info('build-package',
                                                     build_number)
+            except requests.exceptions.ConnectionError as e:
+                print('')
+                log.error('connection error: %s' % e)
+                log.info('Re-try watching with `rhcephpkg watch-build %s`' %
+                         build_number)
             except KeyboardInterrupt:
                 print('')
                 log.info('continue watching with `rhcephpkg watch-build %s`' %
