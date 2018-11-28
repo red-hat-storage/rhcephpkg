@@ -164,18 +164,17 @@ Options:
         for p in series:
             # If there was some in-place Git modification for this patch,
             # (.git_action attribute), include that in our log.
-            try:
-                action = p.git_action
-                # Make common actions human-readable:
-                if action == 'M':
-                    action = 'Modified'
-                if action == 'D':
-                    action = 'Deleted'
-                if action == 'R':
-                    # We don't log .patch file renames
-                    continue
-                change = '%s %s' % (action, p.path)
-            except AttributeError:
+            action = getattr(p, 'git_action', 'A')
+            # Make common actions human-readable:
+            if action == 'M':
+                action = 'Modified'
+            if action == 'D':
+                action = 'Deleted'
+            if action == 'R':
+                # We don't log .patch file renames
+                continue
+            change = '%s %s' % (action, p.path)
+            if action == 'A':
                 # This was a simple patch addition, so just log the patch's
                 # subject.
                 change = p.subject
