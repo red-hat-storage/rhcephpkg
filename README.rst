@@ -1,11 +1,8 @@
 ``rhcephpkg``
 =============
 
-.. image:: https://travis-ci.org/red-hat-storage/rhcephpkg.svg?branch=master
-          :target: https://travis-ci.org/red-hat-storage/rhcephpkg
-
-.. image:: https://badge.fury.io/py/rhcephpkg.svg
-             :target: https://badge.fury.io/py/rhcephpkg
+**Note: this tool is unmaintained. Red Hat does not publish Red Hat Ceph
+Storage for Ubuntu any more, so we do not maintain this tool any more.**
 
 A tool to package and build Red Hat Ceph Storage for Ubuntu.
 
